@@ -64,7 +64,7 @@ with psycopg.connect(
                         reimb_description VARCHAR(250),
                         reimb_receipt text,
                         reimb_author integer not null,
-                        reimb_resolver integer not null,
+                        reimb_resolver integer,
                         reimb_status_id integer not null,
                         reimb_type_id integer not null,
                         
