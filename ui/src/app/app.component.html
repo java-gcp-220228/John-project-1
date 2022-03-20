@@ -1,8 +1,20 @@
 <mat-toolbar>
   <span><h1>Expense Reimbursement System</h1></span>
   <span class="spacer"></span>
-  <button mat-icon-button [routerLink]="['/login']">
-    <mat-icon>login</mat-icon>
-  </button>
+  <span *ngIf="token">
+    <button mat-icon-button [routerLink]="['/dashboard']">
+      <mat-icon>dashboard</mat-icon>
+    </button>
+  </span>
+  <span *ngIf="!token">
+    <button mat-icon-button (click)="login()">
+      <mat-icon>login</mat-icon>
+    </button>
+  </span>
+  <span *ngIf="token">
+    <button mat-icon-button (click)="logout()">
+      <mat-icon>logout</mat-icon>
+    </button>
+  </span>
 </mat-toolbar>
 <router-outlet></router-outlet>
