@@ -1,0 +1,29 @@
+plugins {
+    id 'java'
+    id 'application'
+}
+
+
+
+dependencies {
+    implementation 'io.javalin:javalin:4.3.0'
+    implementation 'org.postgresql:postgresql:42.3.3'
+    implementation 'com.fasterxml.jackson.core:jackson-databind:2.13.2'
+    implementation 'ch.qos.logback:logback-classic:1.2.11'
+    implementation 'org.json:json:20211205'
+    implementation 'io.jsonwebtoken:jjwt-api:0.11.2'
+    runtimeOnly 'io.jsonwebtoken:jjwt-impl:0.11.2'
+    runtimeOnly 'io.jsonwebtoken:jjwt-jackson:0.11.2'
+    testImplementation 'org.mockito:mockito-core:4.3.1'
+    testImplementation 'io.javalin:javalin-testtools:4.3.0'
+    testImplementation 'org.assertj:assertj-core:3.22.0'
+    testImplementation 'org.junit.jupiter:junit-jupiter-api:5.8.2'
+    testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.8.2'
+}
+
+application {
+    mainClass = 'com.revature.main.Server'
+}
+test {
+    useJUnitPlatform()
+}

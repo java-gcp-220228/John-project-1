@@ -1,0 +1,14 @@
+.gradle/
+.idea/
+build/
+dist/
+tmp/
+out-tsc/
+node_modules/
+.angular/
+.vscode/
+bin/
+static/
+
+*.log
+*.class
