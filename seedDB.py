@@ -59,7 +59,7 @@ with psycopg.connect(
                     create table if not exists p1ERS.ers_reimbursements (
                         reimb_id SERIAL primary key,
                         reimb_amount double precision not null,
-                        reimb_sumbitted timestamp not null,
+                        reimb_submitted timestamp not null,
                         reimb_resolved timestamp,
                         reimb_description VARCHAR(250),
                         reimb_receipt text,
