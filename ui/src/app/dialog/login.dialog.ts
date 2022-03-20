@@ -3,7 +3,8 @@ import { MatDialogRef, MAT_DIALOG_DATA } from "@angular/material/dialog";
 
 @Component({
   selector: 'login-dialog',
-  templateUrl: 'login-dialog.html'
+  templateUrl: 'login-dialog.html',
+  styleUrls: ['login.dialog.scss']
 })
 export class LoginDialog {
   constructor(
