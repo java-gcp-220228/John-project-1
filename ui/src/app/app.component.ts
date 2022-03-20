@@ -12,28 +12,34 @@ import { LoginDialog } from './dialog/login.dialog';
 export class AppComponent {
   title = 'ERS';
   token;
+  errorMsg;
   constructor(private auth: AuthService,
     private dialog: MatDialog,
     private router: Router) {
     this.token = localStorage.getItem('jwt');
+    this.errorMsg = '';
   }
 
   login() {
     const dialogRef = this.dialog.open(LoginDialog, {data: {username: "", password: ""}});
 
     dialogRef.afterClosed().subscribe(res => {
-      this.auth.authenticate(res.username, res.password).subscribe(
-        response => {
-          if (response.status == 200) {
+      this.auth.authenticate(res.username, res.password).subscribe({
+        next: response => {
+          if (response.ok) {
             let token = response.headers.get('Token')!;
             localStorage.setItem('jwt', token);
             this.token = token;
             let user = response.body!;
             localStorage.setItem('user_id', "" + user.id);
             this.router.navigate(['dashboard']);
+            this.errorMsg = '';
           }
+        },
+        error: error => {
+          this.errorMsg = error.error.title;
         }
-      )
+      })
     });
   }
 
