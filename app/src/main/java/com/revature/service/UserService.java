@@ -7,10 +7,14 @@ import io.javalin.http.BadRequestResponse;
 import java.sql.SQLException;
 
 public class UserService {
-    private UserDao userDao;
+    private final UserDao userDao;
 
     public UserService() {
         this.userDao = new UserDao();
+    }
+
+    public UserService(UserDao mockDao) {
+        this.userDao = mockDao;
     }
 
     public User login(String username, String password) throws SQLException {

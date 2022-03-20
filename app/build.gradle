@@ -9,6 +9,7 @@ dependencies {
     implementation 'io.javalin:javalin:4.3.0'
     implementation 'org.postgresql:postgresql:42.3.3'
     implementation 'com.fasterxml.jackson.core:jackson-databind:2.13.2'
+    implementation 'com.fasterxml.jackson.datatype:jackson-datatype-jsr310:2.13.2'
     implementation 'ch.qos.logback:logback-classic:1.2.11'
     implementation 'org.json:json:20211205'
     implementation 'io.jsonwebtoken:jjwt-api:0.11.2'
