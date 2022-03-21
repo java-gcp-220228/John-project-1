@@ -20,4 +20,7 @@ public class TicketService {
     public List<Ticket> getAllTickets() throws SQLException {
         return this.ticketDao.getAllTickets();
     }
+    public List<Ticket> getEmployeeTickets(int id) throws SQLException {
+        return this.ticketDao.getTicketFromEmployeeId(id);
+    }
 }

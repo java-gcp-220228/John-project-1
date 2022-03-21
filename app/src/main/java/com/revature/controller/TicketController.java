@@ -34,8 +34,24 @@ public class TicketController implements Controller {
         ctx.json(tickets);
     };
 
+    private final Handler getEmployeeTickets = ctx -> {
+        String jwt = ctx.header("Authorization").split(" ")[1];
+        Jws<Claims> token = jwtService.parseJwt(jwt);
+
+        if (!token.getBody().get("user_role").equals("EMPLOYEE")) {
+            throw new UnauthorizedResponse("Insufficient privileges to access endpoint");
+        }
+        if (ctx.pathParam("id").matches("\\d+")
+                && token.getBody().get("user_id").toString().matches("\\d+")) {
+            int id = Integer.parseInt(ctx.pathParam("id"));
+            List<Ticket> ticketDTOList = ticketService.getEmployeeTickets(id);
+            ctx.json(ticketDTOList);
+        }
+    };
+
     @Override
     public void mapEndpoints(Javalin app) {
         app.get("/tickets", getAllTickets);
+        app.get("/employees/{id}/tickets", getEmployeeTickets);
     }
 }
