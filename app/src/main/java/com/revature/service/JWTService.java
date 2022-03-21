@@ -8,10 +8,16 @@ import io.jsonwebtoken.security.Keys;
 import javax.crypto.SecretKey;
 
 public class JWTService {
+    private static JWTService INSTANCE;
     private SecretKey key;
 
-    public JWTService() {
+    private JWTService() {
         key = Keys.secretKeyFor(SignatureAlgorithm.HS384);
+    }
+
+    public static JWTService getInstance() {
+        if (INSTANCE == null) INSTANCE = new JWTService();
+        return INSTANCE;
     }
 
     public String createJWT(User user) {
@@ -20,7 +26,7 @@ public class JWTService {
                 .claim("user_id", user.getId())
                 .claim("email", user.getEmail())
                 .claim("user_role", user.getUserRole())
-                .signWith(key)
+                .signWith(key,SignatureAlgorithm.HS384)
                 .compact();
     }
 

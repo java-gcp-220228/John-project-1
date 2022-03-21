@@ -32,6 +32,7 @@ export class AppComponent {
             this.token = token;
             let user = response.body!;
             localStorage.setItem('user_id', "" + user.id);
+            localStorage.setItem('user_role', user.userRole);
             this.router.navigate(['dashboard']);
             this.errorMsg = '';
           }

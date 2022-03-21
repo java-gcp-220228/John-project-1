@@ -14,7 +14,7 @@ public class AuthenticationController implements Controller{
 
     public AuthenticationController() {
         this.userService = new UserService();
-        this.jwtService = new JWTService();
+        this.jwtService = JWTService.getInstance();
     }
 
     private final Handler login = (ctx) -> {
