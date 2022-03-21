@@ -17,6 +17,21 @@ public class Ticket {
     private String status;
     private String type;
 
+    public enum ReimbursementType {
+        LODGING(1),
+        TRAVEL(2),
+        FOOD(3),
+        OTHER(4);
+
+        private final int value;
+        ReimbursementType(int i) {
+            this.value = i;
+        }
+        public int getValue() {
+            return value;
+        }
+    }
+
     public Ticket() {
     }
 

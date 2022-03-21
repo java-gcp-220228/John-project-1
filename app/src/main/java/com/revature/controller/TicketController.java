@@ -1,9 +1,11 @@
 package com.revature.controller;
 
+import com.revature.dto.EmployeeAddTicketDTO;
 import com.revature.model.Ticket;
 import com.revature.service.JWTService;
 import com.revature.service.TicketService;
 import io.javalin.Javalin;
+import io.javalin.http.BadRequestResponse;
 import io.javalin.http.Handler;
 import io.javalin.http.UnauthorizedResponse;
 import io.jsonwebtoken.Claims;
@@ -42,10 +44,40 @@ public class TicketController implements Controller {
             throw new UnauthorizedResponse("Insufficient privileges to access endpoint");
         }
         if (ctx.pathParam("id").matches("\\d+")
-                && token.getBody().get("user_id").toString().matches("\\d+")) {
+                && token.getBody().get("user_id").toString().matches("\\d+")
+                && ctx.pathParam("id").equalsIgnoreCase(token.getBody().get("user_id").toString())) {
             int id = Integer.parseInt(ctx.pathParam("id"));
             List<Ticket> ticketDTOList = ticketService.getEmployeeTickets(id);
             ctx.json(ticketDTOList);
+        } else {
+            throw new BadRequestResponse("Employee id does not match");
+        }
+    };
+
+    private final Handler addEmployeeTicket = ctx -> {
+        String jwt = ctx.header("Authorization").split(" ")[1];
+        Jws<Claims> token = jwtService.parseJwt(jwt);
+
+        if (!token.getBody().get("user_role").equals("EMPLOYEE")) {
+            throw new UnauthorizedResponse("Insufficient privileges to access endpoint");
+        }
+        if (ctx.pathParam("id").matches("\\d+")
+                && token.getBody().get("user_id").toString().matches("\\d+")
+                && ctx.pathParam("id").equalsIgnoreCase(token.getBody().get("user_id").toString())) {
+            int id = Integer.parseInt(ctx.pathParam("id"));
+            EmployeeAddTicketDTO newTicket = ctx.bodyValidator(EmployeeAddTicketDTO.class)
+                    .check(ticket -> ticket.getAmount() > 0, "Invalid reimbursement amount")
+                    .check(ticket -> ticket.getAuthor().getId() == id, "Employee id does not match")
+                    .check(ticket -> ticket.getType().equalsIgnoreCase("LODGING") |
+                                    ticket.getType().equalsIgnoreCase("TRAVEL") |
+                                    ticket.getType().equalsIgnoreCase("FOOD") |
+                                    ticket.getType().equalsIgnoreCase("OTHER"),
+                            "Invalid reimbursement type")
+                    .get();
+            EmployeeAddTicketDTO result = ticketService.addEmployeeTicket(newTicket);
+            ctx.json(result);
+        } else {
+            throw new BadRequestResponse("Employee id does not match");
         }
     };
 
@@ -53,5 +85,6 @@ public class TicketController implements Controller {
     public void mapEndpoints(Javalin app) {
         app.get("/tickets", getAllTickets);
         app.get("/employees/{id}/tickets", getEmployeeTickets);
+        app.post("/employees/{id}/tickets", addEmployeeTicket);
     }
 }

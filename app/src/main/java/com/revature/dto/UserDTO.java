@@ -3,15 +3,25 @@ package com.revature.dto;
 import java.util.Objects;
 
 public class UserDTO {
+    private int id;
     private String username;
     private String firstName;
     private String lastName;
     private String email;
+    private String userRole;
 
     public UserDTO() {
     }
 
     public UserDTO(String username, String firstName, String lastName, String email) {
+        this.username = username;
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.email = email;
+    }
+
+    public UserDTO(int id, String username, String firstName, String lastName, String email) {
+        this.id = id;
         this.username = username;
         this.firstName = firstName;
         this.lastName = lastName;
@@ -50,26 +60,44 @@ public class UserDTO {
         this.email = email;
     }
 
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
+
+    public String getUserRole() {
+        return userRole;
+    }
+
+    public void setUserRole(String userRole) {
+        this.userRole = userRole;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         UserDTO userDTO = (UserDTO) o;
-        return Objects.equals(username, userDTO.username) && Objects.equals(firstName, userDTO.firstName) && Objects.equals(lastName, userDTO.lastName) && Objects.equals(email, userDTO.email);
+        return id == userDTO.id && Objects.equals(username, userDTO.username) && Objects.equals(firstName, userDTO.firstName) && Objects.equals(lastName, userDTO.lastName) && Objects.equals(email, userDTO.email) && Objects.equals(userRole, userDTO.userRole);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(username, firstName, lastName, email);
+        return Objects.hash(id, username, firstName, lastName, email, userRole);
     }
 
     @Override
     public String toString() {
         return "UserDTO{" +
-                "username='" + username + '\'' +
+                "id=" + id +
+                ", username='" + username + '\'' +
                 ", firstName='" + firstName + '\'' +
                 ", lastName='" + lastName + '\'' +
                 ", email='" + email + '\'' +
+                ", userRole='" + userRole + '\'' +
                 '}';
     }
 }

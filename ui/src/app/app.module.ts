@@ -5,6 +5,7 @@ import { MatButtonModule } from '@angular/material/button'
 import { MatCardModule } from '@angular/material/card'
 import { MatDialogModule } from '@angular/material/dialog'
 import { MatFormFieldModule } from '@angular/material/form-field'
+import { MatSelectModule } from '@angular/material/select'
 import { MatToolbarModule } from '@angular/material/toolbar'
 import { MatIconModule } from '@angular/material/icon'
 
@@ -20,13 +21,15 @@ import { DashboardComponent } from './dashboard/dashboard.component';
 import { MatGridListModule } from '@angular/material/grid-list';
 import { MatMenuModule } from '@angular/material/menu';
 import { LayoutModule } from '@angular/cdk/layout';
+import { TicketDialog } from './dialog/ticket.dialog';
 
 @NgModule({
   declarations: [
     AppComponent,
     LoginDialog,
     HomeComponent,
-    DashboardComponent
+    DashboardComponent,
+    TicketDialog,
   ],
   imports: [
     BrowserModule,
@@ -38,6 +41,7 @@ import { LayoutModule } from '@angular/cdk/layout';
     MatCardModule,
     MatDialogModule,
     MatFormFieldModule,
+    MatSelectModule,
     MatToolbarModule,
     MatIconModule,
     MatGridListModule,

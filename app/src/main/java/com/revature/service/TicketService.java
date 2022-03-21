@@ -1,6 +1,7 @@
 package com.revature.service;
 
 import com.revature.dao.TicketDao;
+import com.revature.dto.EmployeeAddTicketDTO;
 import com.revature.model.Ticket;
 
 import java.sql.SQLException;
@@ -22,5 +23,9 @@ public class TicketService {
     }
     public List<Ticket> getEmployeeTickets(int id) throws SQLException {
         return this.ticketDao.getTicketFromEmployeeId(id);
+    }
+
+    public EmployeeAddTicketDTO addEmployeeTicket(EmployeeAddTicketDTO newTicket) throws SQLException {
+        return this.ticketDao.createTicketByEmployeeId(newTicket);
     }
 }

@@ -1,5 +1,6 @@
 package com.revature.dao;
 
+import com.revature.dto.EmployeeAddTicketDTO;
 import com.revature.dto.UserDTO;
 import com.revature.model.Ticket;
 import com.revature.utility.ConnectionUtility;
@@ -132,6 +133,42 @@ public class TicketDao {
             }
             return tickets;
 
+        }
+    }
+
+    public EmployeeAddTicketDTO createTicketByEmployeeId(EmployeeAddTicketDTO newTicket) throws SQLException {
+        try (Connection con = ConnectionUtility.getConnection()) {
+            String query = "insert into ers_reimbursements (reimb_amount, reimb_submitted, reimb_description, " +
+                    "reimb_receipt, reimb_author, reimb_status_id, reimb_type_id) " +
+                    "values " +
+                    "(?, ?, ?, ?, ?, ?, ?)";
+
+            PreparedStatement pstmt = con.prepareStatement(query, Statement.RETURN_GENERATED_KEYS);
+
+            LocalDateTime timestamp = LocalDateTime.now();
+            pstmt.setDouble(1, newTicket.getAmount());
+            pstmt.setObject(2, timestamp);
+            pstmt.setString(3, newTicket.getDescription());
+            pstmt.setString(4, newTicket.getReceiptLink());
+            pstmt.setInt(5, newTicket.getAuthor().getId());
+            pstmt.setInt(6, 1);
+            pstmt.setInt(7, Ticket.ReimbursementType.valueOf(newTicket.getType()).getValue());
+
+            pstmt.executeUpdate();
+
+            ResultSet rs = pstmt.getGeneratedKeys();
+
+            rs.next();
+            int id = rs.getInt(1);
+            EmployeeAddTicketDTO result = new EmployeeAddTicketDTO();
+            result.setId(id);
+            result.setAmount(newTicket.getAmount());
+            result.setSubmitted(timestamp);
+            result.setDescription(newTicket.getDescription());
+            result.setReceiptLink(newTicket.getReceiptLink());
+            result.setStatus("PENDING");
+            result.setType(newTicket.getType());
+            return result;
         }
     }
 }

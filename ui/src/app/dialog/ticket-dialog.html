@@ -1,0 +1,41 @@
+<mat-card>
+  <mat-card-header>
+    <mat-card-title>
+      Submit a new Ticket
+    </mat-card-title>
+  </mat-card-header>
+  <mat-card-content>
+    <p>
+      <mat-form-field appearance="fill">
+        <mat-label>Amount</mat-label>
+        <input matInput [(ngModel)]="data.amount">
+        <mat-hint>Amount</mat-hint>
+      </mat-form-field>
+    </p>
+    <p>
+      <mat-form-field appearance="fill">
+        <mat-label>Description</mat-label>
+        <textarea matInput [(ngModel)]="data.description"></textarea>
+        <mat-hint>Description</mat-hint>
+      </mat-form-field>
+    </p>
+    <p>
+      <mat-form-field appearance="fill">
+        <mat-label>Type</mat-label>
+        <mat-select [(ngModel)]="data.type">
+          <mat-option value="LODGING">LODGING</mat-option>
+          <mat-option value="TRAVEL">TRAVEL</mat-option>
+          <mat-option value="FOOD">FOOD</mat-option>
+          <mat-option value="OTHER">OTHER</mat-option>
+        </mat-select>
+        <mat-hint>Type</mat-hint>
+      </mat-form-field>
+    </p>
+  </mat-card-content>
+  <mat-card-actions>
+    <div mat-dialog-actions>
+      <button mat-button (click)="onNoClick()">Cancel</button>
+      <button mat-button [mat-dialog-close]="data" cdkFocusInitial>Submit</button>
+    </div>
+  </mat-card-actions>
+</mat-card>

@@ -10,23 +10,22 @@ import { Ticket } from './model/ticket.model';
 export class ApiService {
 
   constructor(private http: HttpClient) { }
+  options = {
+      headers: new HttpHeaders({
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${localStorage.getItem("jwt")!}`
+      })
+    };
+
 
   getTickets(): Observable<Ticket[]> {
-    const options = {
-      headers: new HttpHeaders({
-        'Content-Type': 'application/json',
-        Authorization: `Bearer ${localStorage.getItem("jwt")!}`
-      })
-    };
-    return this.http.get<Ticket[]>(`${environment.apiUrl}/tickets`, options);
+    return this.http.get<Ticket[]>(`${environment.apiUrl}/tickets`, this.options);
   }
   getEmployeeTickets(id: number): Observable<Ticket[]> {
-    const options = {
-      headers: new HttpHeaders({
-        'Content-Type': 'application/json',
-        Authorization: `Bearer ${localStorage.getItem("jwt")!}`
-      })
-    };
-    return this.http.get<Ticket[]>(`${environment.apiUrl}/employees/${id}/tickets`, options);
+    return this.http.get<Ticket[]>(`${environment.apiUrl}/employees/${id}/tickets`, this.options);
+  }
+
+  addNewTicket(ticket: Ticket) {
+    return this.http.post<Ticket>(`${environment.apiUrl}/employees/${ticket.author.id}/tickets`, ticket, this.options);
   }
 }

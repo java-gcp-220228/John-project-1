@@ -1,5 +1,8 @@
 <div class="grid-container">
   <h1 class="mat-h1">Dashboard</h1>
+  <span>
+    <button mat-raised-button (click)="newTicket()">New Ticket</button>
+  </span>
   <mat-grid-list cols="2" rowHeight="350px">
     <mat-grid-tile *ngFor="let card of cards | async">
       <mat-card class="dashboard-card">
