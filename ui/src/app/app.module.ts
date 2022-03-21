@@ -8,6 +8,7 @@ import { MatFormFieldModule } from '@angular/material/form-field'
 import { MatSelectModule } from '@angular/material/select'
 import { MatToolbarModule } from '@angular/material/toolbar'
 import { MatIconModule } from '@angular/material/icon'
+import { MatInputModule } from '@angular/material/input'
 
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
@@ -44,6 +45,7 @@ import { TicketDialog } from './dialog/ticket.dialog';
     MatSelectModule,
     MatToolbarModule,
     MatIconModule,
+    MatInputModule,
     MatGridListModule,
     MatMenuModule,
     LayoutModule,
