@@ -52,6 +52,11 @@ export class AppComponent {
     this.token = null;
     localStorage.removeItem('jwt');
     localStorage.removeItem('user_id');
+    localStorage.removeItem('username');
+    localStorage.removeItem('firstName');
+    localStorage.removeItem('lastName');
+    localStorage.removeItem('email');
+    localStorage.removeItem('user_role');
     this.router.navigate(['']);
   }
 

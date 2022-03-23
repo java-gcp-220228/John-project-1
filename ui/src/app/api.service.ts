@@ -10,22 +10,25 @@ import { Ticket } from './model/ticket.model';
 export class ApiService {
 
   constructor(private http: HttpClient) { }
-  options = {
+
+
+  getTickets(): Observable<Ticket[]> {
+    return this.http.get<Ticket[]>(`${environment.apiUrl}/tickets`, this.getOptions());
+  }
+  getEmployeeTickets(id: number): Observable<Ticket[]> {
+    return this.http.get<Ticket[]>(`${environment.apiUrl}/employees/${id}/tickets`, this.getOptions());
+  }
+
+  addNewTicket(ticket: Ticket) {
+    return this.http.post<Ticket>(`${environment.apiUrl}/employees/${ticket.author.id}/tickets`, ticket, this.getOptions());
+  }
+
+  getOptions() {
+    return {
       headers: new HttpHeaders({
         'Content-Type': 'application/json',
         Authorization: `Bearer ${localStorage.getItem("jwt")!}`
       })
     };
-
-
-  getTickets(): Observable<Ticket[]> {
-    return this.http.get<Ticket[]>(`${environment.apiUrl}/tickets`, this.options);
-  }
-  getEmployeeTickets(id: number): Observable<Ticket[]> {
-    return this.http.get<Ticket[]>(`${environment.apiUrl}/employees/${id}/tickets`, this.options);
-  }
-
-  addNewTicket(ticket: Ticket) {
-    return this.http.post<Ticket>(`${environment.apiUrl}/employees/${ticket.author.id}/tickets`, ticket, this.options);
   }
 }
