@@ -32,6 +32,20 @@ public class Ticket {
         }
     }
 
+    public enum ReimbursementStatus {
+        PENDING(1),
+        APPROVED(2),
+        DENIED(3);
+
+        private final int code;
+        ReimbursementStatus(int i) {
+            this.code = i;
+        }
+        public int getCode() {
+            return code;
+        }
+    }
+
     public Ticket() {
     }
 

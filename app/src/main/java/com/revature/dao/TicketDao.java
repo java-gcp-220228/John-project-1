@@ -1,6 +1,7 @@
 package com.revature.dao;
 
 import com.revature.dto.EmployeeAddTicketDTO;
+import com.revature.dto.ResolveTicketDTO;
 import com.revature.dto.UserDTO;
 import com.revature.model.Ticket;
 import com.revature.utility.ConnectionUtility;
@@ -20,9 +21,9 @@ public class TicketDao {
             String query = "select tk.reimb_id, tk.reimb_amount, tk.reimb_submitted, " +
                     "tk.reimb_resolved, tk.reimb_description, tk.reimb_receipt, " +
                     "status.reimb_status, rt.reimb_type, " +
-                    "json_build_object('username', users.ers_username, 'firstName', users.user_first_name, " +
+                    "json_build_object('id', users.ers_users_id, 'username', users.ers_username, 'firstName', users.user_first_name, " +
                     "'lastName', users.user_last_name, 'email', users.user_email) as author, " +
-                    "json_build_object('username', mng.ers_username, 'firstName', mng.user_first_name, " +
+                    "json_build_object('id', users.ers_users_id, 'username', mng.ers_username, 'firstName', mng.user_first_name, " +
                     "'lastName', mng.user_last_name, 'email', mng.user_email) as resolver " +
                     "from ers_reimbursements as tk " +
                     "inner join ers_reimbursement_status status " +
@@ -48,7 +49,7 @@ public class TicketDao {
                 String status = rs.getString("reimb_status");
                 String type = rs.getString("reimb_type");
                 JSONObject jsonObject = new JSONObject(rs.getString("author"));
-                UserDTO author = new UserDTO(jsonObject.getString("username"), jsonObject.getString("firstName"),
+                UserDTO author = new UserDTO(jsonObject.getInt("id"), jsonObject.getString("username"), jsonObject.getString("firstName"),
                     jsonObject.getString("lastName"), jsonObject.getString("email"));
 
                 Ticket ticket = new Ticket(id, amount, submitted, status, type);
@@ -56,7 +57,7 @@ public class TicketDao {
 
                 if (resolved != null) {
                     JSONObject json = new JSONObject(rs.getString("resolver"));
-                    UserDTO resolver = new UserDTO(json.getString("username"), json.getString("firstName"),
+                    UserDTO resolver = new UserDTO(json.getInt("id"), json.getString("username"), json.getString("firstName"),
                             json.getString("lastName"), json.getString("email"));
                     ticket.setResolved(resolved);
                     ticket.setResolver(resolver);
@@ -80,20 +81,20 @@ public class TicketDao {
             String query = "select tk.reimb_id, tk.reimb_amount, tk.reimb_submitted, " +
                     "tk.reimb_resolved, tk.reimb_description, tk.reimb_receipt, " +
                     "status.reimb_status, rt.reimb_type, " +
-                    "json_build_object('username', users.ers_username, 'firstName'" +
+                    "json_build_object('id', users.ers_users_id, 'username', users.ers_username, 'firstName'" +
                     ", users.user_first_name, 'lastName', users.user_last_name, 'email', users.user_email) as author, " +
-            "json_build_object('username', mng.ers_username, 'firstName', mng.user_first_name, 'lastName', " +
+                    "json_build_object('id', users.ers_users_id, 'username', mng.ers_username, 'firstName', mng.user_first_name, 'lastName', " +
                     "mng.user_last_name, 'email', mng.user_email) as resolver " +
-            "from ers_reimbursements as tk " +
-            "inner join ers_reimbursement_status status " +
-            "on tk.reimb_status_id = status.reimb_status_id " +
-            "inner join ers_reimbursement_type rt " +
-            "on tk.reimb_type_id = rt.reimb_type_id " +
-            "inner join ers_users users " +
-            "on tk.reimb_author = users.ers_users_id " +
-            "left join ers_users mng " +
-            "on tk.reimb_resolver = mng.ers_users_id "+
-            "where tk.reimb_author = ?";
+                    "from ers_reimbursements as tk " +
+                    "inner join ers_reimbursement_status status " +
+                    "on tk.reimb_status_id = status.reimb_status_id " +
+                    "inner join ers_reimbursement_type rt " +
+                    "on tk.reimb_type_id = rt.reimb_type_id " +
+                    "inner join ers_users users " +
+                    "on tk.reimb_author = users.ers_users_id " +
+                    "left join ers_users mng " +
+                    "on tk.reimb_resolver = mng.ers_users_id "+
+                    "where tk.reimb_author = ?";
 
             PreparedStatement pstmt = con.prepareStatement(query);
             pstmt.setInt(1,id);
@@ -110,7 +111,7 @@ public class TicketDao {
                 String status = rs.getString("reimb_status");
                 String type = rs.getString("reimb_type");
                 JSONObject jsonObject = new JSONObject(rs.getString("author"));
-                UserDTO author = new UserDTO(jsonObject.getString("username"), jsonObject.getString("firstName"),
+                UserDTO author = new UserDTO(jsonObject.getInt("id"), jsonObject.getString("username"), jsonObject.getString("firstName"),
                 jsonObject.getString("lastName"), jsonObject.getString("email"));
 
                 Ticket ticket = new Ticket(reimb_id, amount, submitted, status, type);
@@ -118,8 +119,9 @@ public class TicketDao {
 
                 if (resolved != null) {
                     JSONObject json = new JSONObject(rs.getString("resolver"));
-                    UserDTO resolver = new UserDTO(json.getString("username"), json.getString("firstName"),
+                    UserDTO resolver = new UserDTO(json.getInt("id"), json.getString("username"), json.getString("firstName"),
                             json.getString("lastName"), json.getString("email"));
+
                     ticket.setResolved(resolved);
                     ticket.setResolver(resolver);
                 }
@@ -169,6 +171,29 @@ public class TicketDao {
             result.setStatus("PENDING");
             result.setType(newTicket.getType());
             return result;
+        }
+    }
+
+    public ResolveTicketDTO patchTicket(ResolveTicketDTO dto) throws SQLException {
+        try(Connection con = ConnectionUtility.getConnection()) {
+            String query = "update ers_reimbursements " +
+                    "set reimb_status_id = ?, " +
+                    "reimb_resolver = ?, " +
+                    "reimb_resolved = ? " +
+                    "where reimb_id = ?";
+
+            PreparedStatement pstmt = con.prepareStatement(query);
+
+            LocalDateTime timestamp = LocalDateTime.now();
+            dto.setResolved(timestamp);
+            pstmt.setInt(1, Ticket.ReimbursementStatus.valueOf(dto.getStatus()).getCode());
+            pstmt.setInt(2, dto.getResolver().getId());
+            pstmt.setObject(3, dto.getResolved());
+            pstmt.setInt(4, dto.getId());
+
+            pstmt.executeUpdate();
+
+            return dto;
         }
     }
 }

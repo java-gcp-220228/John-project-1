@@ -23,6 +23,10 @@ export class ApiService {
     return this.http.post<Ticket>(`${environment.apiUrl}/employees/${ticket.author.id}/tickets`, ticket, this.getOptions());
   }
 
+  patchTicket(ticket_id: number, status: string): Observable<Ticket> {
+    return this.http.patch<Ticket>(`${environment.apiUrl}/tickets/${ticket_id}`, status, this.getOptions());
+  }
+
   getOptions() {
     return {
       headers: new HttpHeaders({

@@ -12,7 +12,6 @@ import { User } from '../model/user.model';
   styleUrls: ['./dashboard.component.scss']
 })
 export class DashboardComponent {
-  /** Based on the screen size, switch from standard to one column per row */
   cards!: Observable<Ticket[]>;
   role = localStorage.getItem('user_role');
 
@@ -45,6 +44,14 @@ export class DashboardComponent {
             this.cards = this.api.getEmployeeTickets(+localStorage.getItem('user_id')!);
           }
         })
+      });
+    }
+
+    serveTicket(ticket_id: number, status: string) {
+      this.api.patchTicket(ticket_id, status).subscribe({
+        next: ticket => {
+          this.cards = this.api.getTickets();
+        }
       });
     }
 }

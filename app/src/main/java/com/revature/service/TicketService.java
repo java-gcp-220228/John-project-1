@@ -2,7 +2,10 @@ package com.revature.service;
 
 import com.revature.dao.TicketDao;
 import com.revature.dto.EmployeeAddTicketDTO;
+import com.revature.dto.ResolveTicketDTO;
+import com.revature.dto.UserDTO;
 import com.revature.model.Ticket;
+import io.javalin.http.BadRequestResponse;
 
 import java.sql.SQLException;
 import java.util.List;
@@ -27,5 +30,20 @@ public class TicketService {
 
     public EmployeeAddTicketDTO addEmployeeTicket(EmployeeAddTicketDTO newTicket) throws SQLException {
         return this.ticketDao.createTicketByEmployeeId(newTicket);
+    }
+
+    public ResolveTicketDTO resolveTicket(String ticket_id, String status, UserDTO resolver) throws SQLException {
+        if (!(status.equalsIgnoreCase("APPROVED") ||
+                status.equalsIgnoreCase("DENIED"))) throw new BadRequestResponse("Ticket must be APPROVED or DENIED");
+        try {
+            int id = Integer.parseInt(ticket_id);
+            ResolveTicketDTO dto = new ResolveTicketDTO();
+            dto.setId(id);
+            dto.setStatus(status);
+            dto.setResolver(resolver);
+            return ticketDao.patchTicket(dto);
+        } catch (IllegalArgumentException e) {
+            throw new NumberFormatException("Id must be valid integer");
+        }
     }
 }

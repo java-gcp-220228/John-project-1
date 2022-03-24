@@ -1,6 +1,6 @@
 <div class="grid-container">
   <h1 class="mat-h1">Dashboard</h1>
-  <span>
+  <span *ngIf="role?.toUpperCase()?.includes('EMPLOYEE')">
     <button mat-raised-button (click)="newTicket()">New Ticket</button>
   </span>
   <mat-grid-list cols="2" rowHeight="350px">
@@ -8,18 +8,22 @@
       <mat-card class="dashboard-card">
         <mat-card-header>
           <mat-card-title>
-            Ticket id: {{card.id}} {{card.author.username}} {{card.author.email}}
+            Ticket id: {{card.id}} {{card.author.username}} {{card.author.email}} Submit Date: {{card.submitted}}
           </mat-card-title>
+          <mat-card-subtitle>
+            STATUS: {{card.status}} TYPE: {{card.type}}
+            <span *ngIf="card.status != 'PENDING'">Resolved: {{card.resolved}} by {{card.resolver?.username}}</span>
+          </mat-card-subtitle>
         </mat-card-header>
         <mat-card-content class="dashboard-card-content">
           <div>
-           <span>{{card.amount | currency }}</span>
+           <p>{{card.amount | currency }}</p>
            <span>{{card.description}}</span>
           </div>
         </mat-card-content>
-        <mat-card-actions *ngIf="role?.toUpperCase()?.includes('MANAGER')">
-          <button mat-raised-button>Deny</button>
-          <button mat-raised-button>Approve</button>
+        <mat-card-actions *ngIf="role?.toUpperCase()?.includes('MANAGER') && card.status == 'PENDING'">
+          <button mat-raised-button (click)="serveTicket(card.id, 'DENIED')">Deny</button>
+          <button mat-raised-button (click)="serveTicket(card.id, 'APPROVED')">Approve</button>
         </mat-card-actions>
       </mat-card>
     </mat-grid-tile>
