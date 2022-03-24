@@ -2,14 +2,14 @@ package com.revature.model;
 
 import com.revature.dto.UserDTO;
 
-import java.time.LocalDateTime;
+import java.sql.Timestamp;
 import java.util.Objects;
 
 public class Ticket {
     private int id;
     private double amount;
-    private LocalDateTime submitted;
-    private LocalDateTime resolved;
+    private Timestamp submitted;
+    private Timestamp resolved;
     private String description;
     private String receiptLink;
     private UserDTO author;
@@ -49,7 +49,7 @@ public class Ticket {
     public Ticket() {
     }
 
-    public Ticket(int id, double amount, LocalDateTime submitted, String status, String type) {
+    public Ticket(int id, double amount, Timestamp submitted, String status, String type) {
         this.id = id;
         this.amount = amount;
         this.submitted = submitted;
@@ -73,19 +73,19 @@ public class Ticket {
         this.amount = amount;
     }
 
-    public LocalDateTime getSubmitted() {
+    public Timestamp getSubmitted() {
         return submitted;
     }
 
-    public void setSubmitted(LocalDateTime submitted) {
+    public void setSubmitted(Timestamp submitted) {
         this.submitted = submitted;
     }
 
-    public LocalDateTime getResolved() {
+    public Timestamp getResolved() {
         return resolved;
     }
 
-    public void setResolved(LocalDateTime resolved) {
+    public void setResolved(Timestamp resolved) {
         this.resolved = resolved;
     }
 

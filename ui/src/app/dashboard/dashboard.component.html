@@ -8,11 +8,11 @@
       <mat-card class="dashboard-card">
         <mat-card-header>
           <mat-card-title>
-            Ticket id: {{card.id}} {{card.author.username}} {{card.author.email}} Submit Date: {{card.submitted}}
+            Ticket id: {{card.id}} {{card.author.username}} {{card.author.email}} Submit Date: {{card.submitted | date: 'full'}}
           </mat-card-title>
           <mat-card-subtitle>
             STATUS: {{card.status}} TYPE: {{card.type}}
-            <span *ngIf="card.status != 'PENDING'">Resolved: {{card.resolved}} by {{card.resolver?.username}}</span>
+            <span *ngIf="card.status != 'PENDING'">Resolved: {{card.resolved | date: 'full'}} by {{card.resolver?.username}}</span>
           </mat-card-subtitle>
         </mat-card-header>
         <mat-card-content class="dashboard-card-content">

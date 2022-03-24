@@ -1,12 +1,12 @@
 package com.revature.dto;
 
-import java.time.LocalDateTime;
+import java.sql.Timestamp;
 import java.util.Objects;
 
 public class EmployeeAddTicketDTO {
     private int id;
     private double amount;
-    private LocalDateTime submitted;
+    private Timestamp submitted;
     private String description;
     private String receiptLink;
     private UserDTO author;
@@ -66,11 +66,11 @@ public class EmployeeAddTicketDTO {
         this.amount = amount;
     }
 
-    public LocalDateTime getSubmitted() {
+    public Timestamp getSubmitted() {
         return submitted;
     }
 
-    public void setSubmitted(LocalDateTime submitted) {
+    public void setSubmitted(Timestamp submitted) {
         this.submitted = submitted;
     }
 

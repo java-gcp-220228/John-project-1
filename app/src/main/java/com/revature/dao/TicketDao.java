@@ -8,7 +8,6 @@ import com.revature.utility.ConnectionUtility;
 import org.json.JSONObject;
 
 import java.sql.*;
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -42,8 +41,8 @@ public class TicketDao {
             while (rs.next()) {
                 int id = rs.getInt("reimb_id");
                 double amount = rs.getDouble("reimb_amount");
-                LocalDateTime submitted = rs.getObject("reimb_submitted", LocalDateTime.class);
-                LocalDateTime resolved = rs.getObject("reimb_resolved", LocalDateTime.class);
+                Timestamp submitted = rs.getObject("reimb_submitted", Timestamp.class);
+                Timestamp resolved = rs.getObject("reimb_resolved", Timestamp.class);
                 String description = rs.getString("reimb_description");
                 String receiptLink = rs.getString("reimb_receipt");
                 String status = rs.getString("reimb_status");
@@ -104,8 +103,8 @@ public class TicketDao {
             while (rs.next()) {
                 int reimb_id = rs.getInt("reimb_id");
                 double amount = rs.getDouble("reimb_amount");
-                LocalDateTime submitted = rs.getObject("reimb_submitted", LocalDateTime.class);
-                LocalDateTime resolved = rs.getObject("reimb_resolved", LocalDateTime.class);
+                Timestamp submitted = rs.getObject("reimb_submitted", Timestamp.class);
+                Timestamp resolved = rs.getObject("reimb_resolved", Timestamp.class);
                 String description = rs.getString("reimb_description");
                 String receiptLink = rs.getString("reimb_receipt");
                 String status = rs.getString("reimb_status");
@@ -147,7 +146,7 @@ public class TicketDao {
 
             PreparedStatement pstmt = con.prepareStatement(query, Statement.RETURN_GENERATED_KEYS);
 
-            LocalDateTime timestamp = LocalDateTime.now();
+            Timestamp timestamp = new Timestamp(System.currentTimeMillis());
             pstmt.setDouble(1, newTicket.getAmount());
             pstmt.setObject(2, timestamp);
             pstmt.setString(3, newTicket.getDescription());
@@ -184,7 +183,7 @@ public class TicketDao {
 
             PreparedStatement pstmt = con.prepareStatement(query);
 
-            LocalDateTime timestamp = LocalDateTime.now();
+            Timestamp timestamp = new Timestamp(System.currentTimeMillis());
             dto.setResolved(timestamp);
             pstmt.setInt(1, Ticket.ReimbursementStatus.valueOf(dto.getStatus()).getCode());
             pstmt.setInt(2, dto.getResolver().getId());

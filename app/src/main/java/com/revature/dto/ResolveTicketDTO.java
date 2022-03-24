@@ -1,18 +1,18 @@
 package com.revature.dto;
 
-import java.time.LocalDateTime;
+import java.sql.Timestamp;
 import java.util.Objects;
 
 public class ResolveTicketDTO {
     private int id;
-    private LocalDateTime resolved;
+    private Timestamp resolved;
     private UserDTO resolver;
     private String status;
 
     public ResolveTicketDTO() {
     }
 
-    public ResolveTicketDTO(int id, LocalDateTime resolved, UserDTO resolver, String status) {
+    public ResolveTicketDTO(int id, Timestamp resolved, UserDTO resolver, String status) {
         this.id = id;
         this.resolved = resolved;
         this.resolver = resolver;
@@ -27,11 +27,11 @@ public class ResolveTicketDTO {
         this.id = id;
     }
 
-    public LocalDateTime getResolved() {
+    public Timestamp getResolved() {
         return resolved;
     }
 
-    public void setResolved(LocalDateTime resolved) {
+    public void setResolved(Timestamp resolved) {
         this.resolved = resolved;
     }
 
