@@ -4,7 +4,7 @@
     <button mat-raised-button (click)="newTicket()">New Ticket</button>
   </span>
   <span *ngIf="role?.toUpperCase()?.includes('MANAGER')">
-    <mat-radio-group aria-label="Filter by Status:">
+    <mat-radio-group aria-label="Filter by Status:" [(ngModel)]="filter">
       <mat-radio-button *ngFor="let status of statuses" [value]="status" (change)="this.cards = filterTickets(status)">
         {{status}}
       </mat-radio-button>

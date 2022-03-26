@@ -14,6 +14,7 @@ import { User } from '../model/user.model';
 export class DashboardComponent {
   cards!: Observable<Ticket[]>;
   role = localStorage.getItem('user_role');
+  filter: string = 'ALL';
   statuses: string[] = ['ALL', 'PENDING', 'APPROVED', 'DENIED'];
 
   constructor(
@@ -21,7 +22,7 @@ export class DashboardComponent {
     private dialog: MatDialog,
     ) {
       if (this.role?.toUpperCase().includes('MANAGER')) {
-        this.cards = this.filterTickets('ALL');
+        this.cards = this.filterTickets(this.filter);
       } else if (this.role?.toUpperCase().includes('EMPLOYEE')) {
         let userId = localStorage.getItem('user_id');
         this.cards = this.api.getEmployeeTickets(Number(userId));
@@ -56,7 +57,7 @@ export class DashboardComponent {
     serveTicket(ticket_id: number, status: string) {
       this.api.patchTicket(ticket_id, status).subscribe({
         next: ticket => {
-          this.cards = this.filterTickets(status);
+          this.cards = this.filterTickets(this.filter);
         }
       });
     }
