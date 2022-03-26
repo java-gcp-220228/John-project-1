@@ -3,9 +3,16 @@
   <span *ngIf="role?.toUpperCase()?.includes('EMPLOYEE')">
     <button mat-raised-button (click)="newTicket()">New Ticket</button>
   </span>
+  <span *ngIf="role?.toUpperCase()?.includes('MANAGER')">
+    <mat-radio-group aria-label="Filter by Status:" [(ngModel)]="filter">
+      <mat-radio-button *ngFor="let status of statuses" [value]="status">
+        {{status}}
+      </mat-radio-button>
+    </mat-radio-group>
+  </span>
   <mat-grid-list cols="2" rowHeight="350px">
     <mat-grid-tile *ngFor="let card of cards | async">
-      <mat-card class="dashboard-card">
+      <mat-card class="dashboard-card" *ngIf="filter === 'ALL' || card.status === filter">
         <mat-card-header>
           <mat-card-title>
             Ticket id: {{card.id}} {{card.author.username}} {{card.author.email}} Submit Date: {{card.submitted | date: 'full'}}

@@ -14,6 +14,8 @@ import { User } from '../model/user.model';
 export class DashboardComponent {
   cards!: Observable<Ticket[]>;
   role = localStorage.getItem('user_role');
+  filter: string = 'ALL';
+  statuses: string[] = ['ALL', 'PENDING', 'APPROVED', 'DENIED'];
 
   constructor(
     private api: ApiService,
