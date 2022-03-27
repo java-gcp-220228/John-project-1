@@ -1,4 +1,4 @@
-import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { environment } from 'src/environments/environment';
@@ -19,8 +19,8 @@ export class ApiService {
     return this.http.get<Ticket[]>(`${environment.apiUrl}/employees/${id}/tickets`, this.getOptions());
   }
 
-  addNewTicket(ticket: Ticket) {
-    return this.http.post<Ticket>(`${environment.apiUrl}/employees/${ticket.author.id}/tickets`, ticket, this.getOptions());
+  addNewTicket(formData: FormData, id: number) {
+    return this.http.post(`${environment.apiUrl}/employees/${id}/tickets`, formData, this.getOptions());
   }
 
   patchTicket(ticket_id: number, status: string): Observable<Ticket> {
@@ -30,9 +30,9 @@ export class ApiService {
   getOptions() {
     return {
       headers: new HttpHeaders({
-        'Content-Type': 'application/json',
         Authorization: `Bearer ${localStorage.getItem("jwt")!}`
-      })
+      }),
+      params: new HttpParams()
     };
   }
 }

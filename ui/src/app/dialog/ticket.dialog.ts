@@ -9,9 +9,13 @@ import { User } from "../model/user.model";
 export class TicketDialog {
   constructor(
     public dialogRef: MatDialogRef<TicketDialog>,
-    @Inject(MAT_DIALOG_DATA) public data: {amount: number, description: string, receiptLink: string, author: User, type: string},
+    @Inject(MAT_DIALOG_DATA) public data: {amount: number, description: string, image: File | null, author: User, type: string},
   ) {}
   onNoClick(): void {
     this.dialogRef.close();
+  }
+  upload(e: Event) {
+    let files = (e.target as HTMLInputElement).files;
+    this.data.image = files?.item(0)!;
   }
 }

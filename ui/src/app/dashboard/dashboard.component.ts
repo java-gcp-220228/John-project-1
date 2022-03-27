@@ -43,10 +43,33 @@ export class DashboardComponent {
         email: localStorage.getItem('email')!,
         userRole: localStorage.getItem('user_role')!
       }
-      const dialogRef = this.dialog.open(TicketDialog, {data: {amount: 0, author: user, description: "", type: "OTHER"}})
+      const dialogRef = this.dialog.open(TicketDialog, {data: {amount: 0, author: user, description: "", image: null, type: "OTHER"}})
 
-      dialogRef.afterClosed().subscribe(ticket => {
-        this.api.addNewTicket(ticket).subscribe({
+      dialogRef.afterClosed().subscribe(data => {
+        let formData = new FormData();
+        let ticket: Ticket = {
+          id: 0,
+          amount: data.amount,
+          submitted: data.submitted,
+          description: data.description,
+          receiptLink: "",
+          author: data.author,
+          status: data.status,
+          type: data.type
+        };
+        let id = data.author.id;
+        formData.append('ticket-amount', '' + ticket.amount);
+        formData.append('ticket-description', '' + ticket.description);
+        formData.append('ticket-author-username', ticket.author.username);
+        formData.append('ticket-author-first', ticket.author.firstName);
+        formData.append('ticket-author-last', ticket.author.lastName);
+        formData.append('ticket-author-email', ticket.author.email);
+        formData.append('ticket-author-role', ticket.author.userRole);
+        formData.append('ticket-status', ticket.status);
+        formData.append('ticket-type', ticket.type);
+        formData.append('image', data.image);
+
+        this.api.addNewTicket(formData, id).subscribe({
           next: addedTicket => {
             this.cards = this.api.getEmployeeTickets(+localStorage.getItem('user_id')!);
           }

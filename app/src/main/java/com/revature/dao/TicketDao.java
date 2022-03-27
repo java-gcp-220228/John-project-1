@@ -167,6 +167,7 @@ public class TicketDao {
             result.setSubmitted(timestamp);
             result.setDescription(newTicket.getDescription());
             result.setReceiptLink(newTicket.getReceiptLink());
+            result.setAuthor(newTicket.getAuthor());
             result.setStatus("PENDING");
             result.setType(newTicket.getType());
             return result;

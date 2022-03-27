@@ -27,6 +27,9 @@
            <p>{{card.amount | currency }}</p>
            <span>{{card.description}}</span>
           </div>
+          <div *ngIf="card.receiptLink">
+            <img src="{{card.receiptLink}}" />
+          </div>
         </mat-card-content>
         <mat-card-actions *ngIf="role?.toUpperCase()?.includes('MANAGER') && card.status == 'PENDING'">
           <button mat-raised-button (click)="serveTicket(card.id, 'DENIED')">Deny</button>

@@ -13,6 +13,12 @@
       </mat-form-field>
     </p>
     <p>
+      <label for="receiptImage">Upload receipt image (Optional):</label>
+    </p>
+    <p>
+      <input id="receiptImage" name="image" type="file" (change)="upload($event)">
+    </p>
+    <p>
       <mat-form-field appearance="fill">
         <mat-label>Description</mat-label>
         <textarea matInput [(ngModel)]="data.description"></textarea>
