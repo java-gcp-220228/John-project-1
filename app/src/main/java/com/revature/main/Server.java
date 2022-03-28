@@ -18,11 +18,11 @@ public class Server {
         });
 
         app.before((ctx) -> {
-            logger.info(ctx.method() + " request received for " + ctx.path());
+            logger.info("{} request received for {}", ctx.method(), ctx.path());
         });
 
         app.after((ctx) -> {
-            logger.info("Server response: ("+ ctx.status() + ") " + ctx.resultString());
+            logger.info("Server response: ({}) {}", ctx.status(), ctx.resultString());
         });
 
         map(app, new AuthenticationController(), new TicketController());
