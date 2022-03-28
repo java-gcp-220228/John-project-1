@@ -19,14 +19,10 @@ import java.sql.SQLException;
 import java.util.List;
 
 public class TicketService {
-    private final TicketDao ticketDao;
+    private TicketDao ticketDao;
 
     public TicketService() {
         this.ticketDao = new TicketDao();
-    }
-
-    public TicketService(TicketDao mockDao) {
-        this.ticketDao = mockDao;
     }
 
     public List<Ticket> getAllTickets() throws SQLException {
@@ -37,6 +33,10 @@ public class TicketService {
     }
 
     public EmployeeAddTicketDTO addEmployeeTicket(EmployeeAddTicketDTO newTicket, UploadedFile image) throws SQLException, IOException {
+        if (newTicket.getAmount() <= 0) throw new BadRequestResponse("Invalid reimbursement amount");
+        if (!(newTicket.getType().equalsIgnoreCase("LODGING") || newTicket.getType().equalsIgnoreCase("TRAVEL")
+            || newTicket.getType().equalsIgnoreCase("FOOD") || newTicket.getType().equalsIgnoreCase("OTHER")))
+                throw new BadRequestResponse("Invalid reimbursement type");
         if (image != null) {
             Tika tika = new Tika();
             InputStream img = image.getContent();
@@ -50,7 +50,7 @@ public class TicketService {
         return this.ticketDao.createTicketByEmployeeId(newTicket);
     }
 
-    public String uploadToCloud(String fileName, InputStream img) throws IOException {
+    private String uploadToCloud(String fileName, InputStream img) throws IOException {
         String projectId = "hopeful-altar-343717";
         String bucketName = "revature-project-1";
         Storage storage = StorageOptions.newBuilder().setProjectId(projectId).build().getService();

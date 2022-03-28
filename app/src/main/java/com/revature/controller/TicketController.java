@@ -7,18 +7,14 @@ import com.revature.model.Ticket;
 import com.revature.service.JWTService;
 import com.revature.service.TicketService;
 import io.javalin.Javalin;
-import io.javalin.core.validation.Validator;
 import io.javalin.http.BadRequestResponse;
 import io.javalin.http.Handler;
 import io.javalin.http.UnauthorizedResponse;
 import io.javalin.http.UploadedFile;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jws;
-import org.json.JSONObject;
 
-import java.sql.Timestamp;
 import java.util.List;
-import java.util.Map;
 
 public class TicketController implements Controller {
 
@@ -72,18 +68,11 @@ public class TicketController implements Controller {
                 && token.getBody().get("user_id").toString().matches("\\d+")
                 && ctx.pathParam("id").equalsIgnoreCase(token.getBody().get("user_id").toString())) {
             int id = Integer.parseInt(ctx.pathParam("id"));
-//            EmployeeAddTicketDTO newTicket = ctx.formParamAsClass("ticket", EmployeeAddTicketDTO.class)
-//                    .check(ticket -> ticket.getAmount() > 0, "Invalid reimbursement amount")
-//                    .check(ticket -> ticket.getAuthor().getId() == id, "Employee id does not match")
-//                    .check(ticket -> ticket.getType().equalsIgnoreCase("LODGING") |
-//                                    ticket.getType().equalsIgnoreCase("TRAVEL") |
-//                                    ticket.getType().equalsIgnoreCase("FOOD") |
-//                                    ticket.getType().equalsIgnoreCase("OTHER"),
-//                            "Invalid reimbursement type")
-//                    .get();
+
             EmployeeAddTicketDTO newTicket = new EmployeeAddTicketDTO();
             newTicket.setAmount(ctx.formParamAsClass("ticket-amount", Double.class).get());
             newTicket.setDescription(ctx.formParam("ticket-description"));
+
             UserDTO author = new UserDTO();
             author.setId(id);
             author.setUsername(ctx.formParam("ticket-author-username"));
@@ -92,8 +81,10 @@ public class TicketController implements Controller {
             author.setEmail(ctx.formParam("ticket-author-email"));
             author.setUserRole(ctx.formParam("ticket-author-role"));
             newTicket.setAuthor(author);
+
             newTicket.setStatus(ctx.formParam("ticket-status"));
             newTicket.setType(ctx.formParam("ticket-type"));
+
             UploadedFile image = ctx.uploadedFile("image");
             EmployeeAddTicketDTO result = ticketService.addEmployeeTicket(newTicket, image);
             ctx.json(result);

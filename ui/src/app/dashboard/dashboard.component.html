@@ -10,7 +10,7 @@
       </mat-radio-button>
     </mat-radio-group>
   </span>
-  <mat-grid-list cols="2" rowHeight="350px">
+  <mat-grid-list cols="3" rowHeight="400px">
     <mat-grid-tile *ngFor="let card of cards | async">
       <mat-card class="dashboard-card">
         <mat-card-header>
@@ -28,8 +28,8 @@
            <span>{{card.description}}</span>
           </div>
           <div *ngIf="card.receiptLink">
-            <img src="{{card.receiptLink}}" />
-          </div>
+          <img mat-card-md-image src="{{card.receiptLink}}" />
+        </div>
         </mat-card-content>
         <mat-card-actions *ngIf="role?.toUpperCase()?.includes('MANAGER') && card.status == 'PENDING'">
           <button mat-raised-button (click)="serveTicket(card.id, 'DENIED')">Deny</button>
