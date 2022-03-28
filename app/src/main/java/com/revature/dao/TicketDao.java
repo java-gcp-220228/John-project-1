@@ -34,43 +34,43 @@ public class TicketDao {
                     "left join ers_users mng " +
                     "on tk.reimb_resolver = mng.ers_users_id";
 
-            PreparedStatement pstmt = con.prepareStatement(query);
+            try (PreparedStatement pstmt = con.prepareStatement(query)) {
 
-            ResultSet rs = pstmt.executeQuery();
+                ResultSet rs = pstmt.executeQuery();
 
-            while (rs.next()) {
-                int id = rs.getInt("reimb_id");
-                double amount = rs.getDouble("reimb_amount");
-                Timestamp submitted = rs.getObject("reimb_submitted", Timestamp.class);
-                Timestamp resolved = rs.getObject("reimb_resolved", Timestamp.class);
-                String description = rs.getString("reimb_description");
-                String receiptLink = rs.getString("reimb_receipt");
-                String status = rs.getString("reimb_status");
-                String type = rs.getString("reimb_type");
-                JSONObject jsonObject = new JSONObject(rs.getString("author"));
-                UserDTO author = new UserDTO(jsonObject.getInt("id"), jsonObject.getString("username"), jsonObject.getString("firstName"),
-                    jsonObject.getString("lastName"), jsonObject.getString("email"));
+                while (rs.next()) {
+                    int id = rs.getInt("reimb_id");
+                    double amount = rs.getDouble("reimb_amount");
+                    Timestamp submitted = rs.getObject("reimb_submitted", Timestamp.class);
+                    Timestamp resolved = rs.getObject("reimb_resolved", Timestamp.class);
+                    String description = rs.getString("reimb_description");
+                    String receiptLink = rs.getString("reimb_receipt");
+                    String status = rs.getString("reimb_status");
+                    String type = rs.getString("reimb_type");
+                    JSONObject jsonObject = new JSONObject(rs.getString("author"));
+                    UserDTO author = new UserDTO(jsonObject.getInt("id"), jsonObject.getString("username"), jsonObject.getString("firstName"),
+                            jsonObject.getString("lastName"), jsonObject.getString("email"));
 
-                Ticket ticket = new Ticket(id, amount, submitted, status, type);
-                ticket.setAuthor(author);
+                    Ticket ticket = new Ticket(id, amount, submitted, status, type);
+                    ticket.setAuthor(author);
 
-                if (resolved != null) {
-                    JSONObject json = new JSONObject(rs.getString("resolver"));
-                    UserDTO resolver = new UserDTO(json.getInt("id"), json.getString("username"), json.getString("firstName"),
-                            json.getString("lastName"), json.getString("email"));
-                    ticket.setResolved(resolved);
-                    ticket.setResolver(resolver);
+                    if (resolved != null) {
+                        JSONObject json = new JSONObject(rs.getString("resolver"));
+                        UserDTO resolver = new UserDTO(json.getInt("id"), json.getString("username"), json.getString("firstName"),
+                                json.getString("lastName"), json.getString("email"));
+                        ticket.setResolved(resolved);
+                        ticket.setResolver(resolver);
+                    }
+                    if (description != null) {
+                        ticket.setDescription(description);
+                    }
+                    if (receiptLink != null) {
+                        ticket.setReceiptLink(receiptLink);
+                    }
+                    tickets.add(ticket);
+
                 }
-                if (description != null) {
-                    ticket.setDescription(description);
-                }
-                if (receiptLink != null) {
-                    ticket.setReceiptLink(receiptLink);
-                }
-                tickets.add(ticket);
-
             }
-            pstmt.close();
             return tickets;
         }
     }
@@ -97,44 +97,44 @@ public class TicketDao {
                     "on tk.reimb_resolver = mng.ers_users_id "+
                     "where tk.reimb_author = ?";
 
-            PreparedStatement pstmt = con.prepareStatement(query);
-            pstmt.setInt(1,id);
+            try (PreparedStatement pstmt = con.prepareStatement(query)) {
+                pstmt.setInt(1, id);
 
-            ResultSet rs = pstmt.executeQuery();
+                ResultSet rs = pstmt.executeQuery();
 
-            while (rs.next()) {
-                int reimb_id = rs.getInt("reimb_id");
-                double amount = rs.getDouble("reimb_amount");
-                Timestamp submitted = rs.getObject("reimb_submitted", Timestamp.class);
-                Timestamp resolved = rs.getObject("reimb_resolved", Timestamp.class);
-                String description = rs.getString("reimb_description");
-                String receiptLink = rs.getString("reimb_receipt");
-                String status = rs.getString("reimb_status");
-                String type = rs.getString("reimb_type");
-                JSONObject jsonObject = new JSONObject(rs.getString("author"));
-                UserDTO author = new UserDTO(jsonObject.getInt("id"), jsonObject.getString("username"), jsonObject.getString("firstName"),
-                jsonObject.getString("lastName"), jsonObject.getString("email"));
+                while (rs.next()) {
+                    int reimb_id = rs.getInt("reimb_id");
+                    double amount = rs.getDouble("reimb_amount");
+                    Timestamp submitted = rs.getObject("reimb_submitted", Timestamp.class);
+                    Timestamp resolved = rs.getObject("reimb_resolved", Timestamp.class);
+                    String description = rs.getString("reimb_description");
+                    String receiptLink = rs.getString("reimb_receipt");
+                    String status = rs.getString("reimb_status");
+                    String type = rs.getString("reimb_type");
+                    JSONObject jsonObject = new JSONObject(rs.getString("author"));
+                    UserDTO author = new UserDTO(jsonObject.getInt("id"), jsonObject.getString("username"), jsonObject.getString("firstName"),
+                            jsonObject.getString("lastName"), jsonObject.getString("email"));
 
-                Ticket ticket = new Ticket(reimb_id, amount, submitted, status, type);
-                ticket.setAuthor(author);
+                    Ticket ticket = new Ticket(reimb_id, amount, submitted, status, type);
+                    ticket.setAuthor(author);
 
-                if (resolved != null) {
-                    JSONObject json = new JSONObject(rs.getString("resolver"));
-                    UserDTO resolver = new UserDTO(json.getInt("id"), json.getString("username"), json.getString("firstName"),
-                            json.getString("lastName"), json.getString("email"));
+                    if (resolved != null) {
+                        JSONObject json = new JSONObject(rs.getString("resolver"));
+                        UserDTO resolver = new UserDTO(json.getInt("id"), json.getString("username"), json.getString("firstName"),
+                                json.getString("lastName"), json.getString("email"));
 
-                    ticket.setResolved(resolved);
-                    ticket.setResolver(resolver);
+                        ticket.setResolved(resolved);
+                        ticket.setResolver(resolver);
+                    }
+                    if (description != null) {
+                        ticket.setDescription(description);
+                    }
+                    if (receiptLink != null) {
+                        ticket.setReceiptLink(receiptLink);
+                    }
+                    tickets.add(ticket);
                 }
-                if (description != null) {
-                    ticket.setDescription(description);
-                }
-                if (receiptLink != null) {
-                    ticket.setReceiptLink(receiptLink);
-                }
-                tickets.add(ticket);
             }
-            pstmt.close();
             return tickets;
         }
     }
@@ -146,34 +146,35 @@ public class TicketDao {
                     "values " +
                     "(?, ?, ?, ?, ?, ?, ?)";
 
-            PreparedStatement pstmt = con.prepareStatement(query, Statement.RETURN_GENERATED_KEYS);
+            try (PreparedStatement pstmt = con.prepareStatement(query, Statement.RETURN_GENERATED_KEYS)) {
 
-            Timestamp timestamp = new Timestamp(System.currentTimeMillis());
-            pstmt.setDouble(1, newTicket.getAmount());
-            pstmt.setObject(2, timestamp);
-            pstmt.setString(3, newTicket.getDescription());
-            pstmt.setString(4, newTicket.getReceiptLink());
-            pstmt.setInt(5, newTicket.getAuthor().getId());
-            pstmt.setInt(6, 1);
-            pstmt.setInt(7, Ticket.ReimbursementType.valueOf(newTicket.getType()).getValue());
+                Timestamp timestamp = new Timestamp(System.currentTimeMillis());
+                pstmt.setDouble(1, newTicket.getAmount());
+                pstmt.setObject(2, timestamp);
+                pstmt.setString(3, newTicket.getDescription());
+                pstmt.setString(4, newTicket.getReceiptLink());
+                pstmt.setInt(5, newTicket.getAuthor().getId());
+                pstmt.setInt(6, 1);
+                pstmt.setInt(7, Ticket.ReimbursementType.valueOf(newTicket.getType()).getValue());
 
-            pstmt.executeUpdate();
+                pstmt.executeUpdate();
 
-            ResultSet rs = pstmt.getGeneratedKeys();
+                ResultSet rs = pstmt.getGeneratedKeys();
 
-            rs.next();
-            int id = rs.getInt(1);
-            EmployeeAddTicketDTO result = new EmployeeAddTicketDTO();
-            result.setId(id);
-            result.setAmount(newTicket.getAmount());
-            result.setSubmitted(timestamp);
-            result.setDescription(newTicket.getDescription());
-            result.setReceiptLink(newTicket.getReceiptLink());
-            result.setAuthor(newTicket.getAuthor());
-            result.setStatus("PENDING");
-            result.setType(newTicket.getType());
-            pstmt.close();
-            return result;
+                rs.next();
+                int id = rs.getInt(1);
+                EmployeeAddTicketDTO result = new EmployeeAddTicketDTO();
+                result.setId(id);
+                result.setAmount(newTicket.getAmount());
+                result.setSubmitted(timestamp);
+                result.setDescription(newTicket.getDescription());
+                result.setReceiptLink(newTicket.getReceiptLink());
+                result.setAuthor(newTicket.getAuthor());
+                result.setStatus("PENDING");
+                result.setType(newTicket.getType());
+
+                return result;
+            }
         }
     }
 
@@ -185,18 +186,18 @@ public class TicketDao {
                     "reimb_resolved = ? " +
                     "where reimb_id = ?";
 
-            PreparedStatement pstmt = con.prepareStatement(query);
+            try (PreparedStatement pstmt = con.prepareStatement(query)) {
 
-            Timestamp timestamp = new Timestamp(System.currentTimeMillis());
-            dto.setResolved(timestamp);
-            pstmt.setInt(1, Ticket.ReimbursementStatus.valueOf(dto.getStatus()).getCode());
-            pstmt.setInt(2, dto.getResolver().getId());
-            pstmt.setObject(3, dto.getResolved());
-            pstmt.setInt(4, dto.getId());
+                Timestamp timestamp = new Timestamp(System.currentTimeMillis());
+                dto.setResolved(timestamp);
+                pstmt.setInt(1, Ticket.ReimbursementStatus.valueOf(dto.getStatus()).getCode());
+                pstmt.setInt(2, dto.getResolver().getId());
+                pstmt.setObject(3, dto.getResolved());
+                pstmt.setInt(4, dto.getId());
 
-            pstmt.executeUpdate();
-            pstmt.close();
-            return dto;
+                pstmt.executeUpdate();
+                return dto;
+            }
         }
     }
 }
