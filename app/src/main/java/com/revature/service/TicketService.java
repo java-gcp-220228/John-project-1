@@ -71,7 +71,7 @@ public class TicketService {
             dto.setResolver(resolver);
             return ticketDao.patchTicket(dto);
         } catch (IllegalArgumentException e) {
-            throw new NumberFormatException("Id must be valid integer");
+            throw new BadRequestResponse("Id must be valid integer");
         }
     }
 }

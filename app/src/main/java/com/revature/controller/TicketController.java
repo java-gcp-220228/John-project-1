@@ -7,10 +7,7 @@ import com.revature.model.Ticket;
 import com.revature.service.JWTService;
 import com.revature.service.TicketService;
 import io.javalin.Javalin;
-import io.javalin.http.BadRequestResponse;
-import io.javalin.http.Handler;
-import io.javalin.http.UnauthorizedResponse;
-import io.javalin.http.UploadedFile;
+import io.javalin.http.*;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jws;
 
@@ -20,6 +17,7 @@ public class TicketController implements Controller {
 
     private TicketService ticketService;
     private JWTService jwtService;
+    private final String AUTH = "Authorization";
 
     public TicketController() {
         this.ticketService = new TicketService();
@@ -27,9 +25,7 @@ public class TicketController implements Controller {
     }
 
     private final Handler getAllTickets = ctx -> {
-        String jwt = ctx.header("Authorization").split(" ")[1];
-
-        Jws<Claims> token = jwtService.parseJwt(jwt);
+        Jws<Claims> token = getAuthToken(ctx);
 
         if (!token.getBody().get("user_role").equals("MANAGER")) {
             throw new UnauthorizedResponse("Insufficient privileges to access endpoint");
@@ -40,8 +36,7 @@ public class TicketController implements Controller {
     };
 
     private final Handler getEmployeeTickets = ctx -> {
-        String jwt = ctx.header("Authorization").split(" ")[1];
-        Jws<Claims> token = jwtService.parseJwt(jwt);
+        Jws<Claims> token = getAuthToken(ctx);
 
         if (!token.getBody().get("user_role").equals("EMPLOYEE")) {
             throw new UnauthorizedResponse("Insufficient privileges to access endpoint");
@@ -58,8 +53,7 @@ public class TicketController implements Controller {
     };
 
     private final Handler addEmployeeTicket = ctx -> {
-        String jwt = ctx.header("Authorization").split(" ")[1];
-        Jws<Claims> token = jwtService.parseJwt(jwt);
+        Jws<Claims> token = getAuthToken(ctx);
 
         if (!token.getBody().get("user_role").equals("EMPLOYEE")) {
             throw new UnauthorizedResponse("Insufficient privileges to access endpoint");
@@ -94,9 +88,7 @@ public class TicketController implements Controller {
     };
 
     private final Handler serveTicket = ctx -> {
-        String jwt = ctx.header("Authorization").split(" ")[1];
-
-        Jws<Claims> token = jwtService.parseJwt(jwt);
+        Jws<Claims> token = getAuthToken(ctx);
 
         if (!token.getBody().get("user_role").equals("MANAGER")) {
             throw new UnauthorizedResponse("Insufficient privileges to access endpoint");
@@ -115,6 +107,12 @@ public class TicketController implements Controller {
         ResolveTicketDTO response = ticketService.resolveTicket(ticket_id, status, resolver);
         ctx.json(response);
     };
+
+    private Jws<Claims> getAuthToken(Context ctx) {
+        if (!ctx.headerMap().containsKey(AUTH)) throw new UnauthorizedResponse("Authorization token missing");
+        String jwt = ctx.header(AUTH).split(" ")[1];
+        return jwtService.parseJwt(jwt);
+    }
 
     @Override
     public void mapEndpoints(Javalin app) {

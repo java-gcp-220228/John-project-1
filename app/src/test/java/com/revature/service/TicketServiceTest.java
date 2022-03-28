@@ -1,6 +1,7 @@
 package com.revature.service;
 
 import com.revature.dao.TicketDao;
+import com.revature.dto.EmployeeAddTicketDTO;
 import com.revature.dto.ResolveTicketDTO;
 import com.revature.dto.UserDTO;
 import io.javalin.http.BadRequestResponse;
@@ -11,6 +12,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import java.io.IOException;
 import java.sql.SQLException;
 import java.sql.Timestamp;
 
@@ -56,4 +58,54 @@ public class TicketServiceTest {
                     new UserDTO(1, "admin", "admin", "admin", "admin@admin.com"));
         });
     }
+
+    @Test
+    public void testAddEmployeeTicket_positive() throws SQLException, IOException {
+        EmployeeAddTicketDTO initial = new EmployeeAddTicketDTO();
+        initial.setAmount(100.0);
+        initial.setDescription("Dinner");
+        initial.setType("FOOD");
+        UserDTO author = new UserDTO(250, "DDT", "Diamond", "Turner", "DDT@example.com");
+        initial.setAuthor(author);
+        EmployeeAddTicketDTO expected = new EmployeeAddTicketDTO();
+        expected.setId(600);
+        expected.setAmount(initial.getAmount());
+        expected.setDescription(initial.getDescription());
+        expected.setType(initial.getType());
+        expected.setAuthor(initial.getAuthor());
+        expected.setStatus("PENDING");
+        expected.setSubmitted(new Timestamp(System.currentTimeMillis()));
+        when(mockDao.createTicketByEmployeeId(eq(initial))).thenReturn(expected);
+
+        EmployeeAddTicketDTO actual = ticketService.addEmployeeTicket(initial, null);
+
+        Assertions.assertEquals(expected, actual);
+    }
+
+    @Test
+    public void testAddEmployeeTicket_negativeAmount() {
+        EmployeeAddTicketDTO initial = new EmployeeAddTicketDTO();
+        initial.setAmount(0);
+        initial.setDescription("Dinner");
+        initial.setType("FOOD");
+        UserDTO author = new UserDTO(250, "DDT", "Diamond", "Turner", "DDT@example.com");
+        initial.setAuthor(author);
+        Assertions.assertThrows(BadRequestResponse.class, () -> {
+            ticketService.addEmployeeTicket(initial, null);
+        });
+    }
+
+    @Test
+    public void testAddEmployeeTicket_negativeType() {
+        EmployeeAddTicketDTO initial = new EmployeeAddTicketDTO();
+        initial.setAmount(230);
+        initial.setDescription("Xbox");
+        initial.setType("GAMING");
+        UserDTO author = new UserDTO(250, "DDT", "Diamond", "Turner", "DDT@example.com");
+        initial.setAuthor(author);
+        Assertions.assertThrows(BadRequestResponse.class, () -> {
+            ticketService.addEmployeeTicket(initial, null);
+        });
+    }
+
 }
