@@ -68,6 +68,7 @@ public class TicketDao {
                     ticket.setReceiptLink(receiptLink);
                 }
                 tickets.add(ticket);
+                pstmt.close();
             }
             return tickets;
         }
@@ -132,8 +133,8 @@ public class TicketDao {
                 }
                 tickets.add(ticket);
             }
+            pstmt.close();
             return tickets;
-
         }
     }
 
@@ -170,6 +171,7 @@ public class TicketDao {
             result.setAuthor(newTicket.getAuthor());
             result.setStatus("PENDING");
             result.setType(newTicket.getType());
+            pstmt.close();
             return result;
         }
     }
@@ -192,7 +194,7 @@ public class TicketDao {
             pstmt.setInt(4, dto.getId());
 
             pstmt.executeUpdate();
-
+            pstmt.close();
             return dto;
         }
     }

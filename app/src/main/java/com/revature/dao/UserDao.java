@@ -35,7 +35,7 @@ public class UserDao {
 
                 return new User(id, username, hash, firstName, lastName, email, role);
             }
-
+            pstmt.close();
             return null;
         }
     }
