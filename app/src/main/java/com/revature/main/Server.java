@@ -17,11 +17,11 @@ public class Server {
             javalinConfig.addStaticFiles("../static", Location.EXTERNAL);
         });
 
-        app.before((ctx) -> {
+        app.before(ctx -> {
             logger.info("{} request received for {}", ctx.method(), ctx.path());
         });
 
-        app.after((ctx) -> {
+        app.after(ctx -> {
             logger.info("Server response: ({}) {}", ctx.status(), ctx.resultString());
         });
 

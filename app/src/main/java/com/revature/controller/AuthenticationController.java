@@ -17,7 +17,7 @@ public class AuthenticationController implements Controller{
         this.jwtService = JWTService.getInstance();
     }
 
-    private final Handler login = (ctx) -> {
+    private final Handler login = ctx -> {
         LoginDTO credentials = ctx.bodyAsClass(LoginDTO.class);
 
         User user = this.userService.login(credentials.getUsername(), credentials.getPassword());
