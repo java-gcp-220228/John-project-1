@@ -16,8 +16,8 @@ import java.util.List;
 public class TicketController implements Controller {
 
     private TicketService ticketService;
-    private JWTService jwtService;
-    private final String AUTH = "Authorization";
+    private final JWTService jwtService;
+    private static final  String AUTH = "Authorization";
 
     public TicketController() {
         this.ticketService = new TicketService();

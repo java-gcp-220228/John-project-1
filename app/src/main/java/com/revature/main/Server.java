@@ -10,7 +10,7 @@ import org.slf4j.LoggerFactory;
 
 public class Server {
 
-    public static Logger logger = LoggerFactory.getLogger(Server.class);
+    public static final Logger logger = LoggerFactory.getLogger(Server.class);
 
     public static void main(String[] args) {
         Javalin app = Javalin.create(javalinConfig -> {
