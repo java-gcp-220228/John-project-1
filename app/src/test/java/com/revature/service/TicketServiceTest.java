@@ -53,7 +53,7 @@ public class TicketServiceTest {
 
     @Test
     public void testResolveTicket_negativeId() {
-        Assertions.assertThrows(NumberFormatException.class, () -> {
+        Assertions.assertThrows(BadRequestResponse.class, () -> {
             ticketService.resolveTicket("abc", "DENIED",
                     new UserDTO(1, "admin", "admin", "admin", "admin@admin.com"));
         });
