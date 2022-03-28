@@ -37,8 +37,7 @@ public class JWTService {
         try {
             return Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(jwt);
         } catch(JwtException e) {
-            e.printStackTrace();
-            throw new UnauthorizedResponse("JWT was invalid");
+            throw new UnauthorizedResponse("JWT was invalid: " + e.getMessage());
         }
 
     }
