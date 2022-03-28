@@ -1,9 +1,16 @@
 plugins {
     id 'java'
     id 'application'
+    id "org.sonarqube" version "3.3"
 }
 
-
+sonarqube {
+    properties {
+        property "sonar.projectKey", "java-gcp-220228_John-project-1"
+        property "sonar.organization", "java-gcp-220228"
+        property "sonar.host.url", "https://sonarcloud.io"
+    }
+}
 
 dependencies {
     implementation 'io.javalin:javalin:4.4.0'
