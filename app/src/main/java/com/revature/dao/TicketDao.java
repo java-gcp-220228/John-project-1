@@ -68,8 +68,9 @@ public class TicketDao {
                     ticket.setReceiptLink(receiptLink);
                 }
                 tickets.add(ticket);
-                pstmt.close();
+
             }
+            pstmt.close();
             return tickets;
         }
     }
