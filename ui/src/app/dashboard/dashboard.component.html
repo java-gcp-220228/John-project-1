@@ -15,7 +15,8 @@
       <mat-card class="dashboard-card">
         <mat-card-header>
           <mat-card-title>
-            Ticket id: {{card.id}} {{card.author.username}} {{card.author.email}} Submit Date: {{card.submitted | date: 'full'}}
+            Ticket id: {{card.id}} {{card.author.username}} {{card.author.email}} {{card.author.firstName}} {{card.author.lastName}} <br/>
+            Submit Date: {{card.submitted | date: 'full'}}
           </mat-card-title>
           <mat-card-subtitle>
             STATUS: {{card.status}} TYPE: {{card.type}}
