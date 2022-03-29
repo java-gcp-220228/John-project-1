@@ -16,6 +16,7 @@ public class EmployeeAddTicketDTO {
     private String type;
 
     public EmployeeAddTicketDTO() {
+        // Required for JavaBean standard
     }
 
     @Override

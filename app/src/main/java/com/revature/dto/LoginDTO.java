@@ -6,6 +6,7 @@ public class LoginDTO {
     private String password;
 
     public LoginDTO() {
+        // Required for JavaBean standard
     }
 
     public String getUsername() {
