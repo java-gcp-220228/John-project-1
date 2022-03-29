@@ -97,7 +97,7 @@ public class TicketController implements Controller {
             throw new UnauthorizedResponse(PRIVILEGES);
         }
 
-        String ticket_id = ctx.pathParam("ticket_id");
+        String ticketId = ctx.pathParam("ticket_id");
         String status = ctx.body();
         UserDTO resolver = new UserDTO();
         resolver.setId(token.getBody().get(USER_ID, Integer.class));
@@ -107,7 +107,7 @@ public class TicketController implements Controller {
         resolver.setEmail(token.getBody().get("email", String.class));
         resolver.setUserRole(token.getBody().get(ROLE, String.class));
 
-        ResolveTicketDTO response = ticketService.resolveTicket(ticket_id, status, resolver);
+        ResolveTicketDTO response = ticketService.resolveTicket(ticketId, status, resolver);
         ctx.json(response);
     };
 

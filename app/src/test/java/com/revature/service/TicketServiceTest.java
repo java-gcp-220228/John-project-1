@@ -16,7 +16,6 @@ import java.io.IOException;
 import java.sql.SQLException;
 import java.sql.Timestamp;
 
-import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
