@@ -44,17 +44,17 @@ public class TicketServiceTest {
 
     @Test
     void testResolveTicket_negativeType() {
+        UserDTO user = new UserDTO(1, "admin", "admin", "admin", "admin@admin.com");
         Assertions.assertThrows(BadRequestResponse.class, () -> {
-            ticketService.resolveTicket("200", "PARTIAL",
-                    new UserDTO(1, "admin", "admin", "admin", "admin@admin.com"));
+            ticketService.resolveTicket("200", "PARTIAL", user);
         });
     }
 
     @Test
     void testResolveTicket_negativeId() {
+        UserDTO user = new UserDTO(1, "admin", "admin", "admin", "admin@admin.com");
         Assertions.assertThrows(BadRequestResponse.class, () -> {
-            ticketService.resolveTicket("abc", "DENIED",
-                    new UserDTO(1, "admin", "admin", "admin", "admin@admin.com"));
+            ticketService.resolveTicket("abc", "DENIED", user);
         });
     }
 
