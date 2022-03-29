@@ -17,7 +17,7 @@ public class TicketDao {
     private static final String LAST_NAME = "lastName";
     private static final String EMAIL = "email";
 
-    private static final String sql = "select tk.reimb_id, tk.reimb_amount, tk.reimb_submitted, " +
+    private static final String SQL = "select tk.reimb_id, tk.reimb_amount, tk.reimb_submitted, " +
             "tk.reimb_resolved, tk.reimb_description, tk.reimb_receipt, " +
             "status.reimb_status, rt.reimb_type, " +
             "json_build_object('id', users.ers_users_id, 'username', users.ers_username, 'firstName'" +
@@ -37,7 +37,7 @@ public class TicketDao {
     public List<Ticket> getAllTickets() throws SQLException {
         try (Connection con = ConnectionUtility.getConnection()) {
 
-            String query = sql;
+            String query = SQL;
 
             try (PreparedStatement pstmt = con.prepareStatement(query)) {
 
@@ -88,7 +88,7 @@ public class TicketDao {
     public List<Ticket> getTicketFromEmployeeId(int id) throws SQLException {
         try (Connection con = ConnectionUtility.getConnection()) {
 
-            String query = sql + "where tk.reimb_author = ?";
+            String query = SQL + "where tk.reimb_author = ?";
 
             try (PreparedStatement pstmt = con.prepareStatement(query)) {
                 pstmt.setInt(1, id);
