@@ -60,11 +60,11 @@ public class TicketService {
         return "http://storage.googleapis.com/" + bucketName + "/" + fileName;
     }
 
-    public ResolveTicketDTO resolveTicket(String ticket_id, String status, UserDTO resolver) throws SQLException {
+    public ResolveTicketDTO resolveTicket(String ticketId, String status, UserDTO resolver) throws SQLException {
         if (!(status.equalsIgnoreCase("APPROVED") ||
                 status.equalsIgnoreCase("DENIED"))) throw new BadRequestResponse("Ticket must be APPROVED or DENIED");
         try {
-            int id = Integer.parseInt(ticket_id);
+            int id = Integer.parseInt(ticketId);
             ResolveTicketDTO dto = new ResolveTicketDTO();
             dto.setId(id);
             dto.setStatus(status);
