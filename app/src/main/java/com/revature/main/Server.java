@@ -13,9 +13,8 @@ public class Server {
     public static final Logger logger = LoggerFactory.getLogger(Server.class);
 
     public static void main(String[] args) {
-        Javalin app = Javalin.create(javalinConfig -> {
-            javalinConfig.addStaticFiles("../static", Location.EXTERNAL);
-        });
+        Javalin app = Javalin.create(
+                javalinConfig -> javalinConfig.addStaticFiles("static", Location.CLASSPATH));
 
         app.before(ctx -> logger.info("{} request received for {}", ctx.method(), ctx.path()));
 

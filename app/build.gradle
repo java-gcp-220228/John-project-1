@@ -36,6 +36,21 @@ dependencies {
 application {
     mainClass = 'com.revature.main.Server'
 }
+
+jar {
+    dependsOn ':ui:build'
+    from('../static') {
+        into 'static'
+    }
+    manifest {
+        attributes 'Main-Class': 'com.revature.main.Server'
+    }
+    from {
+        configurations.runtimeClasspath.collect { it.isDirectory() ? it : zipTree(it) }
+    }
+    duplicatesStrategy 'exclude'
+}
+
 test {
     useJUnitPlatform()
 }
