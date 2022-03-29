@@ -16,7 +16,6 @@ import { AppComponent } from './app.component';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { FormsModule } from '@angular/forms';
 import { LoginDialog } from './dialog/login.dialog';
-import { AuthService } from './auth.service';
 import { HttpClientModule } from '@angular/common/http';
 import { HomeComponent } from './home/home.component';
 import { DashboardComponent } from './dashboard/dashboard.component';
@@ -51,9 +50,6 @@ import { TicketDialog } from './dialog/ticket.dialog';
     MatGridListModule,
     MatMenuModule,
     LayoutModule,
-  ],
-  providers: [
-    AuthService
   ],
   bootstrap: [AppComponent]
 })
