@@ -24,8 +24,8 @@ public class UserServiceTest {
     private UserService userService;
 
     @Test
-    public void testLogin_positive() throws SQLException {
-        when(mockDao.getUserByLogin(eq("Tester"), eq("Testing")))
+    void testLogin_positive() throws SQLException {
+        when(mockDao.getUserByLogin("Tester","Testing"))
                 .thenReturn(new User(100, "Tester", "hashedstring",
                         "Test", "Test", "test@test.com", "EMPLOYEE"));
 
@@ -38,7 +38,7 @@ public class UserServiceTest {
     }
 
     @Test
-    public void testLogin_negative() {
+    void testLogin_negative() {
         Assertions.assertThrows(BadRequestResponse.class, () -> {
             userService.login("Tester", "Testing");
         });

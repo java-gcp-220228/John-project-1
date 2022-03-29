@@ -28,7 +28,7 @@ public class TicketServiceTest {
     private TicketService ticketService;
 
     @Test
-    public void testResolveTicket_positive() throws SQLException {
+    void testResolveTicket_positive() throws SQLException {
         ResolveTicketDTO initial = new ResolveTicketDTO();
         initial.setId(200);
         initial.setStatus("APPROVED");
@@ -36,7 +36,7 @@ public class TicketServiceTest {
         initial.setResolver(resolver);
         ResolveTicketDTO expected = new ResolveTicketDTO(initial.getId(),
                 new Timestamp(System.currentTimeMillis()), initial.getResolver(), initial.getStatus());
-        when(mockDao.patchTicket(eq(initial))).thenReturn(expected);
+        when(mockDao.patchTicket(initial)).thenReturn(expected);
 
         ResolveTicketDTO actual = ticketService.resolveTicket("200", "APPROVED", resolver);
 
@@ -44,7 +44,7 @@ public class TicketServiceTest {
     }
 
     @Test
-    public void testResolveTicket_negativeType() {
+    void testResolveTicket_negativeType() {
         Assertions.assertThrows(BadRequestResponse.class, () -> {
             ticketService.resolveTicket("200", "PARTIAL",
                     new UserDTO(1, "admin", "admin", "admin", "admin@admin.com"));
@@ -52,7 +52,7 @@ public class TicketServiceTest {
     }
 
     @Test
-    public void testResolveTicket_negativeId() {
+    void testResolveTicket_negativeId() {
         Assertions.assertThrows(BadRequestResponse.class, () -> {
             ticketService.resolveTicket("abc", "DENIED",
                     new UserDTO(1, "admin", "admin", "admin", "admin@admin.com"));
@@ -60,7 +60,7 @@ public class TicketServiceTest {
     }
 
     @Test
-    public void testAddEmployeeTicket_positive() throws SQLException, IOException {
+    void testAddEmployeeTicket_positive() throws SQLException, IOException {
         EmployeeAddTicketDTO initial = new EmployeeAddTicketDTO();
         initial.setAmount(100.0);
         initial.setDescription("Dinner");
@@ -75,7 +75,7 @@ public class TicketServiceTest {
         expected.setAuthor(initial.getAuthor());
         expected.setStatus("PENDING");
         expected.setSubmitted(new Timestamp(System.currentTimeMillis()));
-        when(mockDao.createTicketByEmployeeId(eq(initial))).thenReturn(expected);
+        when(mockDao.createTicketByEmployeeId(initial)).thenReturn(expected);
 
         EmployeeAddTicketDTO actual = ticketService.addEmployeeTicket(initial, null);
 
@@ -83,7 +83,7 @@ public class TicketServiceTest {
     }
 
     @Test
-    public void testAddEmployeeTicket_negativeAmount() {
+    void testAddEmployeeTicket_negativeAmount() {
         EmployeeAddTicketDTO initial = new EmployeeAddTicketDTO();
         initial.setAmount(0);
         initial.setDescription("Dinner");
@@ -96,7 +96,7 @@ public class TicketServiceTest {
     }
 
     @Test
-    public void testAddEmployeeTicket_negativeType() {
+    void testAddEmployeeTicket_negativeType() {
         EmployeeAddTicketDTO initial = new EmployeeAddTicketDTO();
         initial.setAmount(230);
         initial.setDescription("Xbox");
