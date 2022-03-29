@@ -12,6 +12,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class TicketDao {
+    private static final String USERNAME = "username";
+    private static final String FIRST_NAME = "firstName";
+    private static final String LAST_NAME = "lastName";
+    private static final String EMAIL = "email";
+    
     public List<Ticket> getAllTickets() throws SQLException {
         try (Connection con = ConnectionUtility.getConnection()) {
 
@@ -48,16 +53,16 @@ public class TicketDao {
                     String status = rs.getString("reimb_status");
                     String type = rs.getString("reimb_type");
                     JSONObject jsonObject = new JSONObject(rs.getString("author"));
-                    UserDTO author = new UserDTO(jsonObject.getInt("id"), jsonObject.getString("username"), jsonObject.getString("firstName"),
-                            jsonObject.getString("lastName"), jsonObject.getString("email"));
+                    UserDTO author = new UserDTO(jsonObject.getInt("id"), jsonObject.getString(USERNAME), jsonObject.getString(FIRST_NAME),
+                            jsonObject.getString(LAST_NAME), jsonObject.getString(EMAIL));
 
                     Ticket ticket = new Ticket(id, amount, submitted, status, type);
                     ticket.setAuthor(author);
 
                     if (resolved != null) {
                         JSONObject json = new JSONObject(rs.getString("resolver"));
-                        UserDTO resolver = new UserDTO(json.getInt("id"), json.getString("username"), json.getString("firstName"),
-                                json.getString("lastName"), json.getString("email"));
+                        UserDTO resolver = new UserDTO(json.getInt("id"), json.getString(USERNAME), json.getString(FIRST_NAME),
+                                json.getString(LAST_NAME), json.getString(EMAIL));
                         ticket.setResolved(resolved);
                         ticket.setResolver(resolver);
                     }
@@ -112,16 +117,16 @@ public class TicketDao {
                     String status = rs.getString("reimb_status");
                     String type = rs.getString("reimb_type");
                     JSONObject jsonObject = new JSONObject(rs.getString("author"));
-                    UserDTO author = new UserDTO(jsonObject.getInt("id"), jsonObject.getString("username"), jsonObject.getString("firstName"),
-                            jsonObject.getString("lastName"), jsonObject.getString("email"));
+                    UserDTO author = new UserDTO(jsonObject.getInt("id"), jsonObject.getString(USERNAME), jsonObject.getString(FIRST_NAME),
+                            jsonObject.getString(LAST_NAME), jsonObject.getString(EMAIL));
 
                     Ticket ticket = new Ticket(reimb_id, amount, submitted, status, type);
                     ticket.setAuthor(author);
 
                     if (resolved != null) {
                         JSONObject json = new JSONObject(rs.getString("resolver"));
-                        UserDTO resolver = new UserDTO(json.getInt("id"), json.getString("username"), json.getString("firstName"),
-                                json.getString("lastName"), json.getString("email"));
+                        UserDTO resolver = new UserDTO(json.getInt("id"), json.getString(USERNAME), json.getString(FIRST_NAME),
+                                json.getString(LAST_NAME), json.getString(EMAIL));
 
                         ticket.setResolved(resolved);
                         ticket.setResolver(resolver);

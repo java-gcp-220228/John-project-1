@@ -18,6 +18,9 @@ public class TicketController implements Controller {
     private TicketService ticketService;
     private final JWTService jwtService;
     private static final  String AUTH = "Authorization";
+    private static final  String ROLE = "user_role";
+    private static final  String USER_ID = "user_id";
+    private static final  String PRIVILEGES = "Insufficient privileges to access endpoint";
 
     public TicketController() {
         this.ticketService = new TicketService();
@@ -27,8 +30,8 @@ public class TicketController implements Controller {
     private final Handler getAllTickets = ctx -> {
         Jws<Claims> token = getAuthToken(ctx);
 
-        if (!token.getBody().get("user_role").equals("MANAGER")) {
-            throw new UnauthorizedResponse("Insufficient privileges to access endpoint");
+        if (!token.getBody().get(ROLE).equals("MANAGER")) {
+            throw new UnauthorizedResponse(PRIVILEGES);
         }
 
         List<Ticket> tickets = ticketService.getAllTickets();
@@ -38,12 +41,12 @@ public class TicketController implements Controller {
     private final Handler getEmployeeTickets = ctx -> {
         Jws<Claims> token = getAuthToken(ctx);
 
-        if (!token.getBody().get("user_role").equals("EMPLOYEE")) {
-            throw new UnauthorizedResponse("Insufficient privileges to access endpoint");
+        if (!token.getBody().get(ROLE).equals("EMPLOYEE")) {
+            throw new UnauthorizedResponse(PRIVILEGES);
         }
         if (ctx.pathParam("id").matches("\\d+")
-                && token.getBody().get("user_id").toString().matches("\\d+")
-                && ctx.pathParam("id").equalsIgnoreCase(token.getBody().get("user_id").toString())) {
+                && token.getBody().get(USER_ID).toString().matches("\\d+")
+                && ctx.pathParam("id").equalsIgnoreCase(token.getBody().get(USER_ID).toString())) {
             int id = Integer.parseInt(ctx.pathParam("id"));
             List<Ticket> ticketDTOList = ticketService.getEmployeeTickets(id);
             ctx.json(ticketDTOList);
@@ -55,12 +58,12 @@ public class TicketController implements Controller {
     private final Handler addEmployeeTicket = ctx -> {
         Jws<Claims> token = getAuthToken(ctx);
 
-        if (!token.getBody().get("user_role").equals("EMPLOYEE")) {
-            throw new UnauthorizedResponse("Insufficient privileges to access endpoint");
+        if (!token.getBody().get(ROLE).equals("EMPLOYEE")) {
+            throw new UnauthorizedResponse(PRIVILEGES);
         }
         if (ctx.pathParam("id").matches("\\d+")
-                && token.getBody().get("user_id").toString().matches("\\d+")
-                && ctx.pathParam("id").equalsIgnoreCase(token.getBody().get("user_id").toString())) {
+                && token.getBody().get(USER_ID).toString().matches("\\d+")
+                && ctx.pathParam("id").equalsIgnoreCase(token.getBody().get(USER_ID).toString())) {
             int id = Integer.parseInt(ctx.pathParam("id"));
 
             EmployeeAddTicketDTO newTicket = new EmployeeAddTicketDTO();
@@ -90,19 +93,19 @@ public class TicketController implements Controller {
     private final Handler serveTicket = ctx -> {
         Jws<Claims> token = getAuthToken(ctx);
 
-        if (!token.getBody().get("user_role").equals("MANAGER")) {
-            throw new UnauthorizedResponse("Insufficient privileges to access endpoint");
+        if (!token.getBody().get(ROLE).equals("MANAGER")) {
+            throw new UnauthorizedResponse(PRIVILEGES);
         }
 
         String ticket_id = ctx.pathParam("ticket_id");
         String status = ctx.body();
         UserDTO resolver = new UserDTO();
-        resolver.setId(token.getBody().get("user_id", Integer.class));
+        resolver.setId(token.getBody().get(USER_ID, Integer.class));
         resolver.setUsername(token.getBody().get("username", String.class));
         resolver.setFirstName(token.getBody().get("firstName", String.class));
         resolver.setLastName(token.getBody().get("lastName", String.class));
         resolver.setEmail(token.getBody().get("email", String.class));
-        resolver.setUserRole(token.getBody().get("user_role", String.class));
+        resolver.setUserRole(token.getBody().get(ROLE, String.class));
 
         ResolveTicketDTO response = ticketService.resolveTicket(ticket_id, status, resolver);
         ctx.json(response);
