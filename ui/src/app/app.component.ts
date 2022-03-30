@@ -1,8 +1,9 @@
 import { Component } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
-import { Router } from '@angular/router';
-import { AuthService } from './auth.service';
 import { LoginDialog } from './dialog/login.dialog';
+import { Store } from '@ngrx/store';
+import { AuthActions, AuthSelectors } from './shared/state';
+import { AppState } from './app.state';
 
 @Component({
   selector: 'app-root',
@@ -11,53 +12,30 @@ import { LoginDialog } from './dialog/login.dialog';
 })
 export class AppComponent {
   title = 'ERS';
-  token;
-  errorMsg;
-  constructor(private auth: AuthService,
+  isAuthenticated: boolean = false;
+  errorMsg: string | null | undefined;
+  getState;
+  constructor(
+    private store: Store<AppState>,
     private dialog: MatDialog,
-    private router: Router) {
-    this.token = localStorage.getItem('jwt');
-    this.errorMsg = '';
+    ) {
+      this.getState = this.store.select(AuthSelectors.selectAuthState);
+      this.getState.subscribe((state) => {
+        this.errorMsg = state.errorMessage;
+        this.isAuthenticated = state.isAuthenticated;
+      });
   }
 
   login() {
     const dialogRef = this.dialog.open(LoginDialog, {data: {username: "", password: ""}});
 
     dialogRef.afterClosed().subscribe(res => {
-      this.auth.authenticate(res.username, res.password).subscribe({
-        next: response => {
-          if (response.ok) {
-            let token = response.headers.get('Token')!;
-            localStorage.setItem('jwt', token);
-            this.token = token;
-            let user = response.body!;
-            localStorage.setItem('user_id', "" + user.id);
-            localStorage.setItem('username', user.username);
-            localStorage.setItem('firstName', user.firstName);
-            localStorage.setItem('lastName', user.lastName);
-            localStorage.setItem('email', user.email);
-            localStorage.setItem('user_role', user.userRole);
-            this.router.navigate(['dashboard']);
-            this.errorMsg = '';
-          }
-        },
-        error: error => {
-          this.errorMsg = error.error.title;
-        }
-      })
+      this.store.dispatch(AuthActions.login({username: res.username, password: res.password}));
     });
   }
 
   logout() {
-    this.token = null;
-    localStorage.removeItem('jwt');
-    localStorage.removeItem('user_id');
-    localStorage.removeItem('username');
-    localStorage.removeItem('firstName');
-    localStorage.removeItem('lastName');
-    localStorage.removeItem('email');
-    localStorage.removeItem('user_role');
-    this.router.navigate(['']);
+    this.store.dispatch(AuthActions.logout());
   }
 
 }
