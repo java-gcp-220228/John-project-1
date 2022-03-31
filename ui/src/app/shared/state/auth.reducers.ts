@@ -20,4 +20,13 @@ export const authReducer = createReducer(
     }
   }),
   on(fromActions.logout, () => fromState.initialState),
+  on(fromActions.autoLogin, (state) => {
+    return {
+      ...state,
+      isAuthenticated: true,
+      token: localStorage.getItem('jwt'),
+      user: JSON.parse(localStorage.getItem('user')!),
+      errorMessage: null,
+    }
+  }),
 );

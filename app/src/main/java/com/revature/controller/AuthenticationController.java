@@ -1,6 +1,7 @@
 package com.revature.controller;
 
 import com.revature.dto.LoginDTO;
+import com.revature.dto.UserDTO;
 import com.revature.model.User;
 import com.revature.service.JWTService;
 import com.revature.service.UserService;
@@ -26,7 +27,8 @@ public class AuthenticationController implements Controller{
 
         ctx.header("Token", jwt);
 
-        ctx.json(user);
+        ctx.json(new UserDTO(user.getId(), user.getUsername(),user.getFirstName(), user.getLastName(),
+            user.getEmail(), user.getUserRole()));
     };
 
     @Override

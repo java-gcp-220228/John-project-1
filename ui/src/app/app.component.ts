@@ -24,6 +24,7 @@ export class AppComponent {
         this.errorMsg = state.errorMessage;
         this.isAuthenticated = state.isAuthenticated;
       });
+      if (localStorage.getItem('jwt') && localStorage.getItem('user')) this.store.dispatch(AuthActions.autoLogin());
   }
 
   login() {

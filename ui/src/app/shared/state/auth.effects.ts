@@ -22,6 +22,7 @@ export class AuthEffects {
             let token = response.headers.get('Token')!;
             let user = response.body!;
             localStorage.setItem('jwt', token);
+            localStorage.setItem('user', JSON.stringify(user));
             return fromActions.loginSuccess({user: user, token: token});
           }),
           catchError((error) => {
@@ -47,6 +48,7 @@ export class AuthEffects {
       ofType(fromActions.logout),
       tap(() => {
         localStorage.removeItem('jwt');
+        localStorage.removeItem('user');
         this.router.navigate(['']);
       })
     ),
