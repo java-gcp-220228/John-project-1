@@ -1,9 +1,9 @@
 <div class="grid-container">
   <h1 class="mat-h1">Dashboard</h1>
-  <span *ngIf="role?.toUpperCase()?.includes('EMPLOYEE')">
+  <span *ngIf="user.userRole?.toUpperCase()?.includes('EMPLOYEE')">
     <button mat-raised-button (click)="newTicket()">New Ticket</button>
   </span>
-  <span *ngIf="role?.toUpperCase()?.includes('MANAGER')">
+  <span *ngIf="user.userRole?.toUpperCase()?.includes('MANAGER')">
     <mat-radio-group aria-label="Filter by Status:" [(ngModel)]="filter">
       <mat-radio-button *ngFor="let status of statuses" [value]="status" (change)="this.cards = filterTickets(status)">
         {{status}}
@@ -32,7 +32,7 @@
           <img mat-card-md-image src="{{card.receiptLink}}" />
         </div>
         </mat-card-content>
-        <mat-card-actions *ngIf="role?.toUpperCase()?.includes('MANAGER') && card.status == 'PENDING'">
+        <mat-card-actions *ngIf="user.userRole?.toUpperCase()?.includes('MANAGER') && card.status == 'PENDING'">
           <button mat-raised-button (click)="serveTicket(card.id, 'DENIED')">Deny</button>
           <button mat-raised-button (click)="serveTicket(card.id, 'APPROVED')">Approve</button>
         </mat-card-actions>

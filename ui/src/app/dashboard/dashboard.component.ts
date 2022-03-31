@@ -1,50 +1,52 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
-import { Observable, map } from 'rxjs';
-import { ApiService } from '../api.service';
+import { Observable} from 'rxjs';
 import { TicketDialog } from '../dialog/ticket.dialog';
 import { Ticket } from '../model/ticket.model';
 import { User } from '../model/user.model';
+import { Store } from '@ngrx/store';
+import { AppState } from '../app.state';
+import { AuthSelectors } from '../shared/state';
+import { DashboardActions, DashboardSelectors } from './state';
 
 @Component({
   selector: 'app-dashboard',
   templateUrl: './dashboard.component.html',
   styleUrls: ['./dashboard.component.scss']
 })
-export class DashboardComponent {
+export class DashboardComponent implements OnInit {
+  getUser;
+  user!: User;
   cards!: Observable<Ticket[]>;
-  role = localStorage.getItem('user_role');
   filter: string = 'ALL';
   statuses: string[] = ['ALL', 'PENDING', 'APPROVED', 'DENIED'];
 
   constructor(
-    private api: ApiService,
+    private store: Store<AppState>,
     private dialog: MatDialog,
     ) {
-      if (this.role?.toUpperCase().includes('MANAGER')) {
-        this.cards = this.filterTickets(this.filter);
-      } else if (this.role?.toUpperCase().includes('EMPLOYEE')) {
-        let userId = localStorage.getItem('user_id');
-        this.cards = this.api.getEmployeeTickets(Number(userId));
-      }
+      this.getUser = this.store.select(AuthSelectors.selectAuthState);
+      this.getUser.subscribe((state) => {
+        this.user = state.user!;
+      });
     }
+  ngOnInit(): void {
+    if (this.user.userRole.toUpperCase().includes('MANAGER')) {
+      this.store.dispatch(DashboardActions.loadTickets());
+      this.cards = this.filterTickets(this.filter);
+    } else if (this.user.userRole.toUpperCase().includes('EMPLOYEE')) {
+      this.store.dispatch(DashboardActions.loadEmployeeTickets({employee_id: this.user.id}));
+      this.cards = this.store.select(DashboardSelectors.selectAllTickets);
+    }
+  }
 
     filterTickets(status: string) {
-      if (status == 'ALL') return this.api.getTickets();
-      return this.api.getTickets().pipe(map(tickets => tickets.filter(t => t.status == status)));
+      if (status == 'ALL') return this.store.select(DashboardSelectors.selectAllTickets);
+      return this.store.select(DashboardSelectors.selectFilteredTickets(status));
     }
 
     newTicket() {
-      let user: User = {
-        id: +localStorage.getItem('user_id')!,
-        username: localStorage.getItem('username')!,
-        firstName: localStorage.getItem('firstName')!,
-        lastName: localStorage.getItem('lastName')!,
-        email: localStorage.getItem('email')!,
-        userRole: localStorage.getItem('user_role')!
-      }
-      const dialogRef = this.dialog.open(TicketDialog, {data: {amount: 0, author: user, description: "", image: null, type: "OTHER"}})
-
+      const dialogRef = this.dialog.open(TicketDialog, { data: { amount: 0, author: this.user, description: "", image: null, type: "OTHER" } });
       dialogRef.afterClosed().subscribe(data => {
         let formData = new FormData();
         let ticket: Ticket = {
@@ -57,7 +59,6 @@ export class DashboardComponent {
           status: data.status,
           type: data.type
         };
-        let id = data.author.id;
         formData.append('ticket-amount', '' + ticket.amount);
         formData.append('ticket-description', '' + ticket.description);
         formData.append('ticket-author-username', ticket.author.username);
@@ -69,19 +70,11 @@ export class DashboardComponent {
         formData.append('ticket-type', ticket.type);
         formData.append('image', data.image);
 
-        this.api.addNewTicket(formData, id).subscribe({
-          next: addedTicket => {
-            this.cards = this.api.getEmployeeTickets(+localStorage.getItem('user_id')!);
-          }
-        })
+        this.store.dispatch(DashboardActions.addNewTicket({ employee_id: this.user.id, formData: formData}));
       });
     }
 
     serveTicket(ticket_id: number, status: string) {
-      this.api.patchTicket(ticket_id, status).subscribe({
-        next: ticket => {
-          this.cards = this.filterTickets(this.filter);
-        }
-      });
+      this.store.dispatch(DashboardActions.serveTicket({ ticket_id: ticket_id, status: status }));
     }
 }

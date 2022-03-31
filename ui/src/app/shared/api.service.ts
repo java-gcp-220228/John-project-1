@@ -2,7 +2,7 @@ import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { environment } from 'src/environments/environment';
-import { Ticket } from './model/ticket.model';
+import { Ticket } from '../model/ticket.model';
 
 @Injectable({
   providedIn: 'root'
@@ -20,7 +20,7 @@ export class ApiService {
   }
 
   addNewTicket(formData: FormData, id: number) {
-    return this.http.post(`${environment.apiUrl}/employees/${id}/tickets`, formData, this.getOptions());
+    return this.http.post<Ticket>(`${environment.apiUrl}/employees/${id}/tickets`, formData, this.getOptions());
   }
 
   patchTicket(ticket_id: number, status: string): Observable<Ticket> {

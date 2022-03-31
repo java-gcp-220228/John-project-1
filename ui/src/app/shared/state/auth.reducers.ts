@@ -1,8 +1,8 @@
-import { Action, createReducer, on } from '@ngrx/store'
+import { createReducer, on } from '@ngrx/store'
 import * as fromState from './auth.state'
 import * as fromActions from './auth.actions'
 
-const authReducer = createReducer(
+export const authReducer = createReducer(
   fromState.initialState,
   on(fromActions.loginSuccess, (state, { user, token }) => {
     return {
@@ -21,7 +21,3 @@ const authReducer = createReducer(
   }),
   on(fromActions.logout, () => fromState.initialState),
 );
-
-export function reducer(state: fromState.State | undefined, action: Action): fromState.State {
-  return authReducer(state, action);
-}
