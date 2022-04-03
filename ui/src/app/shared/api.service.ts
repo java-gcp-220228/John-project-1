@@ -3,6 +3,7 @@ import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { environment } from 'src/environments/environment';
 import { Ticket } from '../model/ticket.model';
+import { User } from '../model/user.model';
 
 @Injectable({
   providedIn: 'root'
@@ -10,7 +11,6 @@ import { Ticket } from '../model/ticket.model';
 export class ApiService {
 
   constructor(private http: HttpClient) { }
-
 
   getTickets(): Observable<Ticket[]> {
     return this.http.get<Ticket[]>(`${environment.apiUrl}/tickets`, this.getOptions());
@@ -25,6 +25,10 @@ export class ApiService {
 
   patchTicket(ticket_id: number, status: string): Observable<Ticket> {
     return this.http.patch<Ticket>(`${environment.apiUrl}/tickets/${ticket_id}`, status, this.getOptions());
+  }
+
+  getEmployees(): Observable<User[]> {
+    return this.http.get<User[]>(`${environment.apiUrl}/employees`, this.getOptions());
   }
 
   getOptions() {

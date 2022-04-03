@@ -26,11 +26,16 @@ import { LayoutModule } from '@angular/cdk/layout';
 import { TicketDialog } from './dialog/ticket.dialog';
 import { StoreModule } from '@ngrx/store';
 import { EffectsModule } from '@ngrx/effects';
-import { AuthEffects } from './shared/state/auth.effects';
 import { StoreDevtoolsModule } from '@ngrx/store-devtools';
 import { environment } from '../environments/environment';
 import { reducers } from './app.state';
-import { DashboardEffects } from './dashboard/state/dashboard.effects';
+import { UserManagerComponent } from './user-manager/user-manager.component';
+import { MatTableModule } from '@angular/material/table';
+import { MatPaginatorModule } from '@angular/material/paginator';
+import { MatSortModule } from '@angular/material/sort';
+import { AuthEffects } from './shared/state';
+import { DashboardEffects } from './dashboard/state';
+import { UserManagerEffects } from './user-manager/state';
 
 @NgModule({
   declarations: [
@@ -39,6 +44,7 @@ import { DashboardEffects } from './dashboard/state/dashboard.effects';
     HomeComponent,
     DashboardComponent,
     TicketDialog,
+    UserManagerComponent,
   ],
   imports: [
     BrowserModule,
@@ -59,10 +65,14 @@ import { DashboardEffects } from './dashboard/state/dashboard.effects';
     MatMenuModule,
     MatSnackBarModule,
     LayoutModule,
+    MatTableModule,
+    MatPaginatorModule,
+    MatSortModule,
     StoreModule.forRoot(reducers, {}),
     EffectsModule.forRoot([
-      AuthEffects,
-      DashboardEffects,
+      AuthEffects.AuthEffects,
+      DashboardEffects.DashboardEffects,
+      UserManagerEffects.UserManagerEffects,
     ]),
     StoreDevtoolsModule.instrument({ maxAge: 25, logOnly: environment.production }),
   ],

@@ -1,9 +1,19 @@
 <mat-toolbar>
   <span><h1>Expense Reimbursement System</h1></span>
   <span class="spacer"></span>
+  <span>
+    <button mat-icon-button [routerLink]="['']">
+      <mat-icon>home</mat-icon>
+    </button>
+  </span>
   <span *ngIf="isAuthenticated">
     <button mat-icon-button [routerLink]="['/dashboard']">
       <mat-icon>dashboard</mat-icon>
+    </button>
+  </span>
+  <span *ngIf="isAuthenticated">
+    <button mat-icon-button [routerLink]="['/user-manager']">
+      <mat-icon>supervisor_account</mat-icon>
     </button>
   </span>
   <span *ngIf="!isAuthenticated">

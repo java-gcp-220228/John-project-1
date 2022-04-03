@@ -3,7 +3,6 @@ package com.revature.controller;
 import com.revature.dto.LoginDTO;
 import com.revature.dto.UserDTO;
 import com.revature.model.User;
-import com.revature.service.JWTService;
 import com.revature.service.UserService;
 import io.javalin.Javalin;
 import io.javalin.http.Handler;
@@ -11,11 +10,8 @@ import io.javalin.http.Handler;
 public class AuthenticationController implements Controller{
 
     private UserService userService;
-    private JWTService jwtService;
-
     public AuthenticationController() {
         this.userService = new UserService();
-        this.jwtService = JWTService.getInstance();
     }
 
     private final Handler login = ctx -> {
@@ -23,7 +19,7 @@ public class AuthenticationController implements Controller{
 
         User user = this.userService.login(credentials.getUsername(), credentials.getPassword());
 
-        String jwt = this.jwtService.createJWT(user);
+        String jwt = Controller.jwtService.createJWT(user);
 
         ctx.header("Token", jwt);
 

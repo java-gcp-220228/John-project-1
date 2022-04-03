@@ -4,7 +4,6 @@ import com.revature.dto.EmployeeAddTicketDTO;
 import com.revature.dto.ResolveTicketDTO;
 import com.revature.dto.UserDTO;
 import com.revature.model.Ticket;
-import com.revature.service.JWTService;
 import com.revature.service.TicketService;
 import io.javalin.Javalin;
 import io.javalin.http.*;
@@ -16,34 +15,22 @@ import java.util.List;
 public class TicketController implements Controller {
 
     private TicketService ticketService;
-    private final JWTService jwtService;
-    private static final  String AUTH = "Authorization";
-    private static final  String ROLE = "user_role";
-    private static final  String USER_ID = "user_id";
-    private static final  String PRIVILEGES = "Insufficient privileges to access endpoint";
 
     public TicketController() {
         this.ticketService = new TicketService();
-        this.jwtService = JWTService.getInstance();
     }
 
     private final Handler getAllTickets = ctx -> {
         Jws<Claims> token = getAuthToken(ctx);
-
-        if (!token.getBody().get(ROLE).equals("MANAGER")) {
-            throw new UnauthorizedResponse(PRIVILEGES);
-        }
-
+        throwIfNotManager(token);
         List<Ticket> tickets = ticketService.getAllTickets();
         ctx.json(tickets);
     };
 
     private final Handler getEmployeeTickets = ctx -> {
         Jws<Claims> token = getAuthToken(ctx);
+        throwIfNotEmployee(token);
 
-        if (!token.getBody().get(ROLE).equals("EMPLOYEE")) {
-            throw new UnauthorizedResponse(PRIVILEGES);
-        }
         if (ctx.pathParam("id").matches("\\d+")
                 && token.getBody().get(USER_ID).toString().matches("\\d+")
                 && ctx.pathParam("id").equalsIgnoreCase(token.getBody().get(USER_ID).toString())) {
@@ -57,10 +44,8 @@ public class TicketController implements Controller {
 
     private final Handler addEmployeeTicket = ctx -> {
         Jws<Claims> token = getAuthToken(ctx);
+        throwIfNotEmployee(token);
 
-        if (!token.getBody().get(ROLE).equals("EMPLOYEE")) {
-            throw new UnauthorizedResponse(PRIVILEGES);
-        }
         if (ctx.pathParam("id").matches("\\d+")
                 && token.getBody().get(USER_ID).toString().matches("\\d+")
                 && ctx.pathParam("id").equalsIgnoreCase(token.getBody().get(USER_ID).toString())) {
@@ -92,10 +77,7 @@ public class TicketController implements Controller {
 
     private final Handler serveTicket = ctx -> {
         Jws<Claims> token = getAuthToken(ctx);
-
-        if (!token.getBody().get(ROLE).equals("MANAGER")) {
-            throw new UnauthorizedResponse(PRIVILEGES);
-        }
+        throwIfNotManager(token);
 
         String ticketId = ctx.pathParam("ticket_id");
         String status = ctx.body();
@@ -111,11 +93,6 @@ public class TicketController implements Controller {
         ctx.json(response);
     };
 
-    private Jws<Claims> getAuthToken(Context ctx) {
-        if (!ctx.headerMap().containsKey(AUTH)) throw new UnauthorizedResponse("Authorization token missing");
-        String jwt = ctx.header(AUTH).split(" ")[1];
-        return jwtService.parseJwt(jwt);
-    }
 
     @Override
     public void mapEndpoints(Javalin app) {
