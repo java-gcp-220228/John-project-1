@@ -2,6 +2,26 @@ plugins {
     id 'java'
     id 'application'
     id "org.sonarqube" version "3.3"
+    id "jacoco"
+}
+
+repositories {
+    mavenCentral()
+}
+
+jacoco {
+    toolVersion = "0.8.7"
+}
+
+test {
+    finalizedBy jacocoTestReport
+}
+
+jacocoTestReport {
+    dependsOn test
+    reports {
+        xml.required = true
+    }
 }
 
 sonarqube {
